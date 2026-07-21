@@ -176,52 +176,54 @@ a { color: inherit; }
 .hero {
   position: relative;
   min-height: 100svh;
-  display: flex; align-items: center; justify-content: center;
+  display: flex; align-items: center; justify-content: flex-start;
   color: #fff;
   background-color: var(--brand-ink);
+  /* Content sits left; gradient is dark on the left (for the text) and clears
+     to the right so the Verona skyline reads through. */
   background-image:
-    radial-gradient(1200px 620px at 78% -8%, rgba(90,130,240,.28), transparent 62%),
-    linear-gradient(150deg, rgba(20,50,140,.72) 0%, rgba(8,20,57,.93) 62%, rgba(8,20,57,.97) 100%),
+    linear-gradient(to top, rgba(6,16,46,.5), transparent 30%),
+    linear-gradient(100deg, rgba(6,16,46,.92) 0%, rgba(6,16,46,.78) 32%, rgba(6,16,46,.4) 56%, rgba(6,16,46,.14) 82%, rgba(6,16,46,.1) 100%),
     url("assets/verona-hero.jpg");
   background-size: cover;
-  background-position: center 40%;
+  background-position: center 30%;
   background-repeat: no-repeat;
-  background-blend-mode: screen, multiply, normal;
-  padding: clamp(5rem, 12vh, 8rem) clamp(1.2rem, 4vw, 2.5rem) clamp(4rem, 9vh, 6rem);
-  text-align: center;
+  background-blend-mode: normal;
+  padding: clamp(5rem, 12vh, 8rem) clamp(1.5rem, 5vw, 4.5rem) clamp(4rem, 9vh, 6rem);
+  text-align: left;
   overflow: hidden;
 }
-/* animated gold glow */
+/* animated gold glow, over the photo on the right */
 .hero::after {
   content: ""; position: absolute; z-index: 0;
-  width: 60vw; height: 60vw; max-width: 720px; max-height: 720px;
-  left: 50%; top: 8%; transform: translateX(-50%);
-  background: radial-gradient(circle, rgba(246,180,14,.18), transparent 65%);
-  filter: blur(20px);
+  width: 50vw; height: 50vw; max-width: 640px; max-height: 640px;
+  right: 3%; top: 12%;
+  background: radial-gradient(circle, rgba(246,180,14,.15), transparent 66%);
+  filter: blur(24px);
   animation: floatGlow 12s ease-in-out infinite alternate;
   pointer-events: none;
 }
 @keyframes floatGlow {
-  from { transform: translate(-54%, 0) scale(1); opacity: .8; }
-  to   { transform: translate(-46%, 4%) scale(1.12); opacity: 1; }
+  from { transform: translateY(0) scale(1); opacity: .6; }
+  to   { transform: translateY(4%) scale(1.1); opacity: .95; }
 }
-.hero-inner { position: relative; z-index: 1; max-width: 860px; margin: 0 auto; }
+.hero-inner { position: relative; z-index: 1; max-width: 600px; margin: 0; }
 .hero-crest {
-  height: clamp(96px, 15vw, 156px); width: auto; margin: 0 auto 1.6rem;
+  height: clamp(74px, 8vw, 106px); width: auto; margin: 0 0 1.4rem;
   filter: drop-shadow(0 14px 30px rgba(0,0,0,.4));
   animation: crestIn 1s var(--ease) both;
 }
 @keyframes crestIn { from { opacity: 0; transform: translateY(14px) scale(.94); } to { opacity: 1; transform: none; } }
-.hero .eyebrow { color: var(--accent-2); justify-content: center; }
-.hero .eyebrow::before { background: linear-gradient(90deg, transparent, var(--accent-2)); }
-.hero .eyebrow::after { content: ""; width: 26px; height: 2px; border-radius: 2px; background: linear-gradient(90deg, var(--accent-2), transparent); }
-.hero h1 { color: #fff; text-shadow: 0 4px 30px rgba(0,0,0,.35); }
+.hero .eyebrow { color: var(--accent-2); justify-content: flex-start; }
+.hero .eyebrow::before { background: var(--accent-2); }
+.hero .eyebrow::after { display: none; }
+.hero h1 { color: #fff; text-shadow: 0 4px 30px rgba(0,0,0,.4); }
 .hero h1 .accent-word { color: var(--accent-2); }
 .hero-sub {
   font-size: clamp(1.05rem, 2vw, 1.28rem); color: rgba(255,255,255,.92);
-  max-width: 640px; margin: 1.2rem auto 2.1rem; line-height: 1.6;
+  max-width: 520px; margin: 1.3rem 0 2.2rem; line-height: 1.6;
 }
-.hero-cta { display: flex; gap: .9rem; justify-content: center; flex-wrap: wrap; }
+.hero-cta { display: flex; gap: .9rem; justify-content: flex-start; flex-wrap: wrap; }
 .hero-cta--mobile { display: none; }
 
 .hero-scroll {
