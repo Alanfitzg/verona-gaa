@@ -25,6 +25,9 @@
     .gate { min-height:100vh; display:grid; place-items:center; padding:1.5rem; }
     .gate-card { width:min(400px,100%); background:var(--card); border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow); padding:2rem; text-align:center; }
     .gate-card h1 { font-family:var(--font-display); font-weight:600; font-size:1.5rem; margin-bottom:.3rem; }
+    .gate-crest { height:66px; width:auto; display:block; margin:0 auto .9rem; }
+    header.bar .brand { display:flex; align-items:center; gap:.9rem; }
+    header.bar .brand-crest { height:56px; width:auto; }
     .gate-card p { color:var(--muted); font-size:.92rem; margin:0 0 1.3rem; }
     .gate input { width:100%; padding:.85rem .9rem; font:inherit; border:1.5px solid var(--line); border-radius:10px; margin-bottom:.8rem; }
     .gate input:focus { outline:none; border-color:var(--brand); box-shadow:0 0 0 3px rgba(26,63,160,.15); }
@@ -93,6 +96,7 @@
   <!-- ===== Login gate ===== -->
   <section class="gate" id="gate">
     <form class="gate-card" id="gate-form">
+      <img class="gate-crest" src="/assets/crest.png" alt="Verona GAA crest" onerror="this.style.display='none'" />
       <h1>Verona GAA</h1>
       <p>Sign-ups dashboard — log in with your email.</p>
       <input type="email" id="email" autocomplete="email" autocapitalize="none" spellcheck="false" placeholder="you@example.com" required />
@@ -104,9 +108,12 @@
   <!-- ===== Dashboard ===== -->
   <main class="wrap hide" id="dash">
     <header class="bar">
-      <div>
-        <h1>Sign-ups</h1>
-        <div class="sub" id="updated"></div>
+      <div class="brand">
+        <img class="brand-crest" src="/assets/crest.png" alt="Verona GAA crest" onerror="this.style.display='none'" />
+        <div>
+          <h1>Welcome to Verona GAA</h1>
+          <div class="sub">Sign-ups dashboard · <span id="updated"></span></div>
+        </div>
       </div>
       <div class="actions">
         <button class="btn" id="refresh">Refresh</button>
