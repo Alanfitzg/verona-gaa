@@ -143,7 +143,7 @@ a { color: inherit; }
 .brand { display: flex; align-items: center; gap: .65rem; text-decoration: none; font-family: var(--font-head); font-weight: 800; color: var(--ink); }
 .brand-crest { height: 42px; width: auto; transition: height .3s var(--ease); }
 .site-header.is-stuck .brand-crest { height: 34px; }
-.brand-name { font-size: 1.2rem; letter-spacing: -.02em; }
+.brand-name { font-size: clamp(1rem, 3vw, 1.2rem); letter-spacing: -.02em; line-height: 1.12; }
 .site-nav { display: flex; gap: 1.6rem; margin-left: auto; }
 .site-nav a {
   position: relative; text-decoration: none; font-family: var(--font-head);
