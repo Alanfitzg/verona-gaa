@@ -689,12 +689,14 @@ a { color: inherit; }
   .hero::after { display: none; }          /* drop the centred gold glow */
   .hero-crest { display: none; }           /* the crest already lives in the header */
   .hero-scroll { display: none; }          /* declutter */
-  .hero-inner { margin: 0; max-width: 100%; }
-  .hero .eyebrow { justify-content: flex-start; margin-bottom: 1rem; }
+  /* Fill the hero height so we can pin content top and bottom */
+  .hero-inner { margin: 0; max-width: 100%; display: flex; flex-direction: column; flex: 1 1 auto; }
+  .hero .eyebrow { justify-content: flex-start; margin-bottom: 1rem; }   /* pinned to the top */
   .hero .eyebrow::after { display: none; } /* one leading accent when left-aligned */
+  .hero h1 { margin-bottom: 0; }           /* headline sits directly under the eyebrow */
 
-  /* Buttons side by side in one row (mobile set only) */
-  .hero-cta--mobile { display: flex; flex-direction: row; flex-wrap: wrap; align-items: stretch; gap: .6rem; }
+  /* Buttons pushed to the bottom (over the scrim, clear of the image) */
+  .hero-cta--mobile { display: flex; flex-direction: row; flex-wrap: wrap; align-items: stretch; gap: .6rem; margin-top: auto; }
   .hero-cta--mobile .btn { padding: .85rem 1.15rem; font-size: .9rem; }
 }
 @media (max-width: 400px) {
