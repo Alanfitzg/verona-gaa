@@ -631,10 +631,28 @@ a { color: inherit; }
   .lang-btn:hover { color: #fff; }
 
   /* Trim hero: smaller headline, no subtext, mobile CTAs */
-  .hero h1 { font-size: clamp(1.8rem, 7vw, 2.3rem); }
+  .hero h1 { font-size: clamp(1.9rem, 7.5vw, 2.4rem); text-align: left; }
   .hero-sub { display: none; }
   .hero-cta--desktop { display: none; }
-  .hero-cta--mobile { display: flex; }
+  .hero-cta--mobile { display: flex; flex-direction: column; align-items: flex-start; gap: .8rem; }
+
+  /* Elite hero: dedupe the crest, reveal the Verona photo, anchor content bottom-left */
+  .hero {
+    justify-content: flex-end; text-align: left;
+    padding-top: 5.5rem; padding-bottom: clamp(2.4rem, 7vh, 3.6rem);
+    background-image:
+      linear-gradient(to top, rgba(6,16,46,.95) 2%, rgba(6,16,46,.55) 32%, rgba(6,16,46,.06) 62%, rgba(6,16,46,.34) 100%),
+      url("assets/verona-hero.jpg");
+    background-blend-mode: normal;
+    background-position: center 26%;
+  }
+  .hero::after { display: none; }          /* drop the centred gold glow */
+  .hero-crest { display: none; }           /* the crest already lives in the header */
+  .hero-scroll { display: none; }          /* declutter — content now sits at the bottom */
+  .hero-inner { margin: 0; max-width: 100%; }
+  .hero .eyebrow { justify-content: flex-start; }
+  .hero .eyebrow::after { display: none; } /* one leading accent when left-aligned */
+  .hero-cta { justify-content: flex-start; }
 }
 @media (max-width: 400px) {
   .brand-name { font-size: 1.05rem; }
