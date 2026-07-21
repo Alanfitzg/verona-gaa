@@ -255,7 +255,7 @@
       document.getElementById("tiles").innerHTML =
         tile("Total sign-ups", list.length, "", true) +
         tile("This week", thisWeek, "last 7 days") +
-        tile("Players", players, "vs "+(list.length-players)+" admin/volunteer") +
+        tile("Players", players, "of "+list.length+" total") +
         tile("Under-18", u18, "parent-registered");
 
       overtime(document.getElementById("overtime"), list);
@@ -272,7 +272,8 @@
       var roleMap = countBy(list, function(it){ return it.role||"—"; });
       bars(document.getElementById("roles"), [
         {label:"Player", value:roleMap["player"]||0},
-        {label:"Admin/vol.", value:roleMap["administrator"]||0},
+        {label:"Social", value:roleMap["social"]||0},
+        {label:"Volunteer", value:roleMap["administrator"]||0},
       ]);
 
       var langMap = countBy(list, function(it){ return (it.page_language||"").toLowerCase(); });

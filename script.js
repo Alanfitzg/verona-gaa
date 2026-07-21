@@ -64,7 +64,7 @@
       if (dobField) dobField.hidden = on; // parent's own DOB not needed
       if (playerName) playerName.required = on;
       if (playerDob) playerDob.required = on;
-      if (selfDob) selfDob.required = !on;
+      if (selfDob) selfDob.required = false; // optional — social members needn't give it
     }
     if (isParent) {
       isParent.addEventListener("change", syncParent);
