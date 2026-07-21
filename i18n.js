@@ -70,6 +70,16 @@ window.I18N = {
     "about.card3.title": "All welcome",
     "about.card3.body": "English and Italian speakers alike — everyone is welcome to get involved.",
 
+    "aboutm.kicker": "The club",
+    "aboutm.title": "A community, first",
+    "aboutm.body": "Verona GAA is a community first — and a sports club that opens the door to international travel, new friends and the craic. Beginners welcome. Social members welcome.",
+    "aboutm.p1.t": "Community first",
+    "aboutm.p1.d": "Social members, families and friends — everyone belongs, on and off the pitch.",
+    "aboutm.p2.t": "Play & travel",
+    "aboutm.p2.d": "Train, play and travel abroad for fixtures and tournaments — for all involved.",
+    "aboutm.p3.t": "All welcome",
+    "aboutm.p3.d": "Beginners thrive here — no experience needed, and every language spoken.",
+
     "gge.kicker": "Proudly part of",
     "gge.title": "Gaelic Games Europe",
     "gge.body": "Verona GAA is a member club of Gaelic Games Europe — the governing body for Gaelic football, hurling and camogie across the continent.",
@@ -193,6 +203,16 @@ window.I18N = {
     "about.card2.body": "Eventi sociali, una casa lontano da casa e nuovi amici dentro e fuori dal campo.",
     "about.card3.title": "Tutti benvenuti",
     "about.card3.body": "Anglofoni e italofoni: tutti sono i benvenuti a partecipare.",
+
+    "aboutm.kicker": "Il club",
+    "aboutm.title": "Prima di tutto, una comunità",
+    "aboutm.body": "Verona GAA è prima di tutto una comunità — e un club sportivo che apre le porte a viaggi internazionali, nuove amicizie e tanto divertimento. Principianti benvenuti. Soci sostenitori benvenuti.",
+    "aboutm.p1.t": "Prima la comunità",
+    "aboutm.p1.d": "Soci, famiglie e amici — c'è posto per tutti, dentro e fuori dal campo.",
+    "aboutm.p2.t": "Gioca e viaggia",
+    "aboutm.p2.d": "Allenati, gioca e viaggia all'estero per partite e tornei — per chiunque partecipi.",
+    "aboutm.p3.t": "Tutti benvenuti",
+    "aboutm.p3.d": "I principianti sono i benvenuti — nessuna esperienza richiesta, ogni lingua è parlata.",
 
     "sports.title": "Gli sport che pratichiamo",
     "sports.football.title": "Calcio Gaelico",
