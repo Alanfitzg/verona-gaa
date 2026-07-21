@@ -382,11 +382,22 @@ a { color: inherit; }
 }
 #join h2 { color: #fff; }
 #join .lead { color: rgba(255,255,255,.9); }
+/* large faded crest watermark beside the form */
+#join .section-inner { position: relative; z-index: 1; }
+#join::after {
+  content: ""; position: absolute; z-index: 0; pointer-events: none;
+  top: 50%; right: -4%; transform: translateY(-50%);
+  width: clamp(340px, 36vw, 560px); aspect-ratio: 1;
+  background: url("assets/crest.png") center / contain no-repeat;
+  opacity: .3;
+}
+@media (max-width: 900px) { #join::after { display: none; } }
 .join-form {
-  margin-top: 2.4rem; background: var(--card); border: 0;
+  margin-top: 2.4rem; background: var(--card); border: 0; color: var(--body);
   border-radius: var(--radius-lg); padding: clamp(1.6rem, 4vw, 2.6rem);
   box-shadow: var(--shadow-lg);
 }
+.join-form .check span { color: var(--body); }
 .field { margin-bottom: 1.2rem; }
 .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1.1rem; }
 .field label, .field-label { display: block; font-family: var(--font-head); font-weight: 600; font-size: .92rem; margin-bottom: .45rem; color: var(--ink); }
