@@ -3,7 +3,7 @@ window.I18N = {
   en: {
     "nav.festival": "The Festival",
     "nav.games": "The Games",
-    "nav.join": "Take Part",
+    "nav.join": "Join the club",
 
     "hero.eyebrow": "Gaelic games at the Tocatì Festival",
     "hero.title": "The ancient games of Ireland — live in Verona",
@@ -137,7 +137,7 @@ window.I18N = {
   it: {
     "nav.festival": "Il Festival",
     "nav.games": "Gli Sport",
-    "nav.join": "Partecipa",
+    "nav.join": "Unisciti al club",
 
     "hero.eyebrow": "Sport gaelici al Festival Tocatì",
     "hero.title": "Gli antichi giochi d'Irlanda — dal vivo a Verona",
