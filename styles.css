@@ -209,12 +209,12 @@ a { color: inherit; }
 }
 .hero-inner { position: relative; z-index: 1; max-width: 600px; margin: 0; }
 .hero-crest {
-  height: clamp(74px, 8vw, 106px); width: auto; margin: 0 0 1.4rem;
+  height: clamp(96px, 10vw, 140px); width: auto; margin: 0 0 1.5rem;
   filter: drop-shadow(0 14px 30px rgba(0,0,0,.4));
   animation: crestIn 1s var(--ease) both;
 }
 @keyframes crestIn { from { opacity: 0; transform: translateY(14px) scale(.94); } to { opacity: 1; transform: none; } }
-.hero .eyebrow { color: var(--accent-2); justify-content: flex-start; }
+.hero .eyebrow { display: none; color: var(--accent-2); justify-content: flex-start; }
 .hero .eyebrow::before { background: var(--accent-2); }
 .hero .eyebrow::after { display: none; }
 .hero h1 { color: #fff; text-shadow: 0 4px 30px rgba(0,0,0,.4); }
@@ -726,7 +726,7 @@ a { color: inherit; }
   .hero-scroll { display: none; }          /* declutter */
   /* Fill the hero height so we can pin content top and bottom */
   .hero-inner { margin: 0; max-width: 100%; display: flex; flex-direction: column; flex: 1 1 auto; }
-  .hero .eyebrow { justify-content: flex-start; margin-bottom: 1rem; }   /* pinned to the top */
+  .hero .eyebrow { display: inline-flex; justify-content: flex-start; margin-bottom: 1rem; }   /* shown on mobile, pinned to the top */
   .hero .eyebrow::after { display: none; } /* one leading accent when left-aligned */
   .hero h1 { margin-bottom: 0; }           /* headline sits directly under the eyebrow */
 
