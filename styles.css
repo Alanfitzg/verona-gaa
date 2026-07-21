@@ -615,6 +615,9 @@ a { color: inherit; }
   .festival-inner { flex-direction: column; text-align: center; }
   .festival .eyebrow, .festival-unesco { justify-content: center; }
   .festival-unesco { margin-left: auto; margin-right: auto; }
+  /* Minimal festival band: logo + "Brought to you by Tocatì" + button only */
+  .festival-body { display: none; }
+  .festival-text h2 { margin-bottom: 0; }
   .hero { min-height: 92svh; }
 
   /* ---- Mobile-only header + hero treatment ---- */
