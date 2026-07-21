@@ -81,6 +81,9 @@
     .pill { display:inline-block; font-size:.72rem; font-weight:600; font-family:var(--font-head); padding:.15rem .5rem; border-radius:999px; background:var(--track); color:var(--brand); }
     .pill.u18 { background:#fdf0d6; color:var(--accent); }
     .hide { display:none !important; }
+    .qhead { font-family:var(--font-display); font-weight:600; font-size:1.4rem; color:var(--ink); margin:2.2rem 0 1rem; }
+    .qcount { font-family:var(--font-head); font-weight:600; font-size:.8rem; color:var(--muted); background:var(--track); padding:.15rem .55rem; border-radius:999px; vertical-align:middle; margin-left:.4rem; }
+    .msgtable td.msg, .msgtable th.msg { white-space:normal; min-width:280px; max-width:520px; }
     footer { color:var(--muted); font-size:.78rem; text-align:center; margin:1.6rem 0 0; }
   </style>
 </head>
@@ -152,7 +155,16 @@
         <tbody id="tbody"></tbody>
       </table>
     </div>
-    <footer>Personal data — keep this page private. Sign-ups are stored on your Vercel database.</footer>
+
+    <h2 class="qhead">Questions <span class="qcount" id="msg-count">0</span></h2>
+    <div class="tablewrap">
+      <table class="msgtable">
+        <thead><tr><th>When</th><th>Name</th><th>Email</th><th>Lang</th><th class="msg">Message</th></tr></thead>
+        <tbody id="msg-tbody"></tbody>
+      </table>
+    </div>
+
+    <footer>Personal data — keep this page private. Sign-ups and messages are stored on your Vercel database.</footer>
   </main>
 
   <script>
@@ -290,12 +302,36 @@
       else { gate.classList.remove("hide"); dash.classList.add("hide"); }
     }
 
+    async function loadMessages(user, pw){
+      try {
+        var res = await fetch("/api/messages", { headers: { "x-admin-user": user, "x-admin-key": pw } });
+        if (!res.ok) return;
+        var json = await res.json();
+        renderMessages(json.items || []);
+      } catch (e) {}
+    }
+    function renderMessages(list){
+      var count = document.getElementById("msg-count");
+      if (count) count.textContent = list.length;
+      var tb = document.getElementById("msg-tbody");
+      if (!list.length) { tb.innerHTML = '<tr><td colspan="5" class="empty">No questions yet.</td></tr>'; return; }
+      tb.innerHTML = list.map(function(it){
+        return '<tr>'+
+          '<td>'+esc(fmtDate(it.received_at))+'</td>'+
+          '<td>'+esc(it.name)+'</td>'+
+          '<td><a href="mailto:'+esc(it.email)+'">'+esc(it.email)+'</a></td>'+
+          '<td><span class="pill">'+esc((it.page_language||"").toUpperCase())+'</span></td>'+
+          '<td class="msg">'+esc(it.message)+'</td>'+
+        '</tr>';
+      }).join("");
+    }
+
     async function attempt(user, pw, errEl){
       try {
         var list = await load(user, pw);
         authed = true;
         try { sessionStorage.setItem(K_USER, user); sessionStorage.setItem(K_KEY, pw); } catch(e){}
-        ui(); render(list);
+        ui(); render(list); loadMessages(user, pw);
       } catch (e) {
         authed = false;
         if (errEl) errEl.textContent = e.message || "Something went wrong.";

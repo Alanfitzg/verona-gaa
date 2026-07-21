@@ -369,6 +369,62 @@
     });
   }
 
+  // Contact form: POST a question to /api/contact (stored + shown on the dashboard).
+  function initContact() {
+    const form = document.querySelector(".contact-form");
+    if (!form) return;
+    const val = (n) => { const el = form.querySelector('[name="' + n + '"]'); return el ? el.value.trim() : ""; };
+
+    function done(key, isError) {
+      const lang = document.documentElement.lang || "en";
+      const msg = (dict[lang] && dict[lang][key]) || (isError ? "Something went wrong." : "Thanks!");
+      if (isError) {
+        let box = form.querySelector(".form-error");
+        if (!box) {
+          box = document.createElement("p");
+          box.className = "form-error";
+          box.setAttribute("role", "alert");
+          form.insertBefore(box, form.querySelector('button[type="submit"]'));
+        }
+        box.textContent = msg;
+      } else {
+        const note = document.createElement("div");
+        note.className = "form-success";
+        note.setAttribute("role", "status");
+        note.textContent = msg;
+        form.replaceChildren(note);
+      }
+    }
+
+    form.addEventListener("submit", async (e) => {
+      if (!form.checkValidity()) return;
+      e.preventDefault();
+      const hp = form.querySelector('[name="bot-field"]');
+      if (hp && hp.value.trim() !== "") { done("contact.success", false); return; }
+
+      const submitBtn = form.querySelector('button[type="submit"]');
+      if (submitBtn) submitBtn.disabled = true;
+      const payload = JSON.stringify({
+        name: val("name"),
+        email: val("email"),
+        message: val("message"),
+        page_language: document.documentElement.lang || "en",
+      });
+      try {
+        const res = await fetch("/api/contact", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: payload,
+        });
+        if (!res.ok) throw new Error("HTTP " + res.status);
+        done("contact.success", false);
+      } catch (err) {
+        if (submitBtn) submitBtn.disabled = false;
+        done("contact.error", true);
+      }
+    });
+  }
+
   document.addEventListener("DOMContentLoaded", () => {
     initLang();
     initForm();
@@ -376,5 +432,6 @@
     initGames();
     initNav();
     initTransition();
+    initContact();
   });
 })();
