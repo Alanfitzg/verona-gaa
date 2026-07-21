@@ -629,12 +629,21 @@ a { color: inherit; }
   .field-row { grid-template-columns: 1fr; }
   .affiliation-inner { flex-direction: column; text-align: center; }
   .affiliation-body { margin-left: auto; margin-right: auto; }
-  .festival-inner { flex-direction: column; text-align: center; }
-  .festival .eyebrow, .festival-unesco { justify-content: center; }
-  .festival-unesco { margin-left: auto; margin-right: auto; }
-  /* Minimal festival band: logo + "Brought to you by Tocatì" + button only */
+  /* Festival: one compact row — small logo left, heading + button on the right */
+  .festival-inner {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-template-areas: "logo text" "logo cta";
+    align-items: center; gap: .8rem 1.1rem; text-align: left;
+  }
+  .festival-logo-wrap { grid-area: logo; align-self: center; }
+  .festival-logo { width: 74px; padding: 6px; }
+  .festival-text { grid-area: text; min-width: 0; }
+  .festival-cta { grid-area: cta; }
+  .festival .eyebrow { justify-content: flex-start; margin-bottom: .3rem; }
   .festival-body { display: none; }
-  .festival-text h2 { margin-bottom: 0; }
+  .festival-text h2 { margin-bottom: 0; font-size: clamp(1.2rem, 5.5vw, 1.55rem); line-height: 1.12; }
+  .festival-cta .btn { padding: .7rem 1.3rem; font-size: .95rem; }
 
   /* About: swap the boxy cards for the concise editorial block */
   .about-desktop { display: none; }
