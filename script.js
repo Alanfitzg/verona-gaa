@@ -21,12 +21,15 @@
       }
     });
 
-    // Toggle button state
+    // Toggle button state (desktop two-button switch)
     document.querySelectorAll(".lang-btn").forEach((btn) => {
       const active = btn.dataset.lang === lang;
       btn.classList.toggle("is-active", active);
       btn.setAttribute("aria-pressed", active ? "true" : "false");
     });
+    // Single circular toggle (mobile): show the current language
+    const lt = document.getElementById("lang-toggle");
+    if (lt) lt.textContent = lang.toUpperCase();
 
     try { localStorage.setItem(STORAGE_KEY, lang); } catch (e) {}
   }
@@ -40,6 +43,10 @@
 
     document.querySelectorAll(".lang-btn").forEach((btn) => {
       btn.addEventListener("click", () => applyLang(btn.dataset.lang));
+    });
+    const lt = document.getElementById("lang-toggle");
+    if (lt) lt.addEventListener("click", () => {
+      applyLang(document.documentElement.lang === "it" ? "en" : "it");
     });
   }
 

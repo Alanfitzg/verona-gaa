@@ -159,10 +159,11 @@ a { color: inherit; }
 
 .nav-toggle {
   display: none; width: 44px; height: 44px; padding: 0;
-  border: 1px solid var(--line); border-radius: 12px; background: #fff; cursor: pointer;
+  border: 1px solid var(--line); border-radius: 50%; background: #fff; cursor: pointer;
   flex-direction: column; align-items: center; justify-content: center; gap: 4px;
 }
-.nav-toggle span { display: block; width: 20px; height: 2px; border-radius: 2px; background: var(--ink); transition: transform .25s var(--ease), opacity .2s var(--ease); }
+.nav-toggle span { display: block; width: 18px; height: 2px; border-radius: 2px; background: var(--ink); transition: transform .25s var(--ease), opacity .2s var(--ease); }
+.lang-toggle { display: none; }
 .site-header.nav-open .nav-toggle span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
 .site-header.nav-open .nav-toggle span:nth-child(2) { opacity: 0; }
 .site-header.nav-open .nav-toggle span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
@@ -743,16 +744,23 @@ a { color: inherit; }
 
   /* ---- Mobile-only header + hero treatment ---- */
   /* Inverted (dark) header with white text + larger crest */
-  .site-header { background: rgba(8,20,57,.85); border-bottom-color: rgba(255,255,255,.14); }
+  .site-header { background: rgba(8,20,57,.85); border-bottom-color: rgba(255,255,255,.14); gap: .55rem; }
   .site-header.is-stuck { background: rgba(8,20,57,.94); box-shadow: 0 6px 20px rgba(0,0,0,.3); }
   .brand-name { color: #fff; }
   .brand-crest { height: 56px; }
   .site-header.is-stuck .brand-crest { height: 46px; }
-  .nav-toggle { background: rgba(255,255,255,.12); border-color: rgba(255,255,255,.28); }
+  .nav-toggle { background: rgba(255,255,255,.1); border-color: rgba(255,255,255,.32); }
   .nav-toggle span { background: #fff; }
-  .lang-switch { background: rgba(255,255,255,.10); border-color: rgba(255,255,255,.30); }
-  .lang-btn { color: rgba(255,255,255,.8); }
-  .lang-btn:hover { color: #fff; }
+  /* Replace the wide EN|IT switch with a single circular language button */
+  .lang-switch { display: none; }
+  .lang-toggle {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 44px; height: 44px; border-radius: 50%;
+    background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.32); color: #fff;
+    font-family: var(--font-head); font-weight: 700; font-size: .78rem; letter-spacing: .03em; cursor: pointer;
+    transition: background .2s;
+  }
+  .lang-toggle:hover { background: rgba(255,255,255,.18); }
 
   /* Trim hero: restrained headline so the PHOTO is the hero, not the text */
   .hero h1 { font-size: clamp(1.35rem, 5.4vw, 1.8rem); line-height: 1.14; text-align: left; margin-bottom: 1.3rem; }
