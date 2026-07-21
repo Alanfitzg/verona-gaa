@@ -48,7 +48,11 @@ in step 2 to match.)
 |---|---|
 | `SUPABASE_URL` | your project URL, e.g. `https://xxxx.supabase.co` |
 | `SUPABASE_SERVICE_ROLE_KEY` | Supabase → Project Settings → API → **service_role** secret |
-| `ADMIN_PASSWORD` | a strong password you choose (for `/admin`) |
+| `ADMIN_USERS` | JSON of named logins, e.g. `{"alan":"pw1","chris":"pw2"}` |
+
+`/admin` accepts a **username + password** per person, defined in `ADMIN_USERS`.
+The dashboard is **desktop-only** (a notice shows on phones). To add/rotate a
+person, edit the JSON and redeploy.
 
 **Optional — email each sign-up via Resend** (add all three to switch it on):
 | Name | Value |

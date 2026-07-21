@@ -4,11 +4,25 @@
 const SB_URL = process.env.SUPABASE_URL;
 const SB_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SERVICE_KEY;
 const TABLE = process.env.SIGNUPS_TABLE || "verona_signups";
-const ADMIN = process.env.ADMIN_PASSWORD;
+
+// Named logins live in the ADMIN_USERS env var as JSON, e.g.
+//   {"alan":"password1","chris":"password2"}
+// A single shared ADMIN_PASSWORD still works too, if set.
+function authOK(req) {
+  const user = String(req.headers["x-admin-user"] || "").toLowerCase().trim();
+  const key = String(req.headers["x-admin-key"] || (req.query && req.query.key) || "");
+  if (!key) return false;
+  let users = {};
+  try { users = JSON.parse(process.env.ADMIN_USERS || "{}"); } catch (e) { users = {}; }
+  const map = {};
+  Object.keys(users).forEach((k) => { map[k.toLowerCase()] = users[k]; });
+  if (user && map[user] && map[user] === key) return true;
+  if (process.env.ADMIN_PASSWORD && key === process.env.ADMIN_PASSWORD) return true;
+  return false;
+}
 
 export default async function handler(req, res) {
-  const key = req.headers["x-admin-key"] || (req.query && req.query.key) || "";
-  if (!ADMIN || key !== ADMIN) { res.status(401).json({ ok: false, error: "unauthorized" }); return; }
+  if (!authOK(req)) { res.status(401).json({ ok: false, error: "unauthorized" }); return; }
   if (!SB_URL || !SB_KEY) { res.status(503).json({ ok: false, error: "storage not configured" }); return; }
 
   try {

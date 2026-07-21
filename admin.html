@@ -82,13 +82,22 @@
   </style>
 </head>
 <body>
-  <!-- ===== Password gate ===== -->
+  <!-- ===== Desktop-only notice ===== -->
+  <section class="gate hide" id="deskonly">
+    <div class="gate-card">
+      <h1>Verona GAA</h1>
+      <p>The sign-ups dashboard is available on <strong>desktop only</strong>.<br/>Please open this page on a computer.</p>
+    </div>
+  </section>
+
+  <!-- ===== Login gate ===== -->
   <section class="gate" id="gate">
     <form class="gate-card" id="gate-form">
       <h1>Verona GAA</h1>
-      <p>Sign-ups dashboard — enter the admin password.</p>
+      <p>Sign-ups dashboard — please log in.</p>
+      <input type="text" id="user" autocomplete="username" autocapitalize="none" spellcheck="false" placeholder="Username" required />
       <input type="password" id="pw" autocomplete="current-password" placeholder="Password" required />
-      <button type="submit">View dashboard</button>
+      <button type="submit">Log in</button>
       <p class="err" id="gate-err"></p>
     </form>
   </section>
@@ -142,16 +151,18 @@
 
   <script>
   (function () {
-    var KEY = "vg_admin_key";
+    var K_USER = "vg_admin_user", K_KEY = "vg_admin_key";
     var gate = document.getElementById("gate");
     var dash = document.getElementById("dash");
+    var deskonly = document.getElementById("deskonly");
     var items = [];
+    var authed = false;
 
     function esc(s){ return String(s==null?"":s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];}); }
 
-    async function load(pw) {
-      var res = await fetch("/api/submissions", { headers: { "x-admin-key": pw } });
-      if (res.status === 401) throw new Error("Wrong password.");
+    async function load(user, pw) {
+      var res = await fetch("/api/submissions", { headers: { "x-admin-user": user, "x-admin-key": pw } });
+      if (res.status === 401) throw new Error("Wrong username or password.");
       if (!res.ok) throw new Error("Couldn't load (error " + res.status + ").");
       var json = await res.json();
       return json.items || [];
@@ -265,40 +276,52 @@
       setTimeout(function(){ URL.revokeObjectURL(url); }, 1000);
     }
 
-    function show(pw){
-      gate.classList.add("hide"); dash.classList.remove("hide");
-      try { sessionStorage.setItem(KEY, pw); } catch(e){}
+    function isDesktop(){ return window.matchMedia("(min-width: 900px)").matches; }
+    function ui(){
+      if (!isDesktop()){ deskonly.classList.remove("hide"); gate.classList.add("hide"); dash.classList.add("hide"); return; }
+      deskonly.classList.add("hide");
+      if (authed){ gate.classList.add("hide"); dash.classList.remove("hide"); }
+      else { gate.classList.remove("hide"); dash.classList.add("hide"); }
     }
 
-    async function attempt(pw, errEl){
+    async function attempt(user, pw, errEl){
       try {
-        var list = await load(pw);
-        show(pw); render(list);
+        var list = await load(user, pw);
+        authed = true;
+        try { sessionStorage.setItem(K_USER, user); sessionStorage.setItem(K_KEY, pw); } catch(e){}
+        ui(); render(list);
       } catch (e) {
+        authed = false;
         if (errEl) errEl.textContent = e.message || "Something went wrong.";
-        try { sessionStorage.removeItem(KEY); } catch(_){}
+        try { sessionStorage.removeItem(K_USER); sessionStorage.removeItem(K_KEY); } catch(_){}
       }
     }
 
     document.getElementById("gate-form").addEventListener("submit", function(e){
       e.preventDefault();
+      var user = document.getElementById("user").value.trim().toLowerCase();
       var pw = document.getElementById("pw").value.trim();
       document.getElementById("gate-err").textContent = "";
-      if (pw) attempt(pw, document.getElementById("gate-err"));
+      if (user && pw) attempt(user, pw, document.getElementById("gate-err"));
     });
     document.getElementById("refresh").addEventListener("click", function(){
-      var pw = sessionStorage.getItem(KEY); if (pw) attempt(pw, null);
+      var u = sessionStorage.getItem(K_USER), p = sessionStorage.getItem(K_KEY);
+      if (u && p) attempt(u, p, null);
     });
     document.getElementById("csv").addEventListener("click", download);
     document.getElementById("logout").addEventListener("click", function(){
-      try { sessionStorage.removeItem(KEY); } catch(e){}
-      dash.classList.add("hide"); gate.classList.remove("hide");
+      authed = false;
+      try { sessionStorage.removeItem(K_USER); sessionStorage.removeItem(K_KEY); } catch(e){}
       document.getElementById("pw").value = "";
+      ui();
     });
+    window.addEventListener("resize", ui);
 
-    // Resume an existing session on load.
-    var saved = null; try { saved = sessionStorage.getItem(KEY); } catch(e){}
-    if (saved) attempt(saved, null);
+    // Resume an existing session on load (desktop only).
+    var su=null, sp=null;
+    try { su = sessionStorage.getItem(K_USER); sp = sessionStorage.getItem(K_KEY); } catch(e){}
+    if (su && sp) attempt(su, sp, null);
+    ui();
   })();
   </script>
 </body>
