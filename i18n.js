@@ -1,15 +1,63 @@
 // Bilingual copy for Verona GAA. Keys map to [data-i18n] attributes in index.html.
 window.I18N = {
   en: {
-    "nav.about": "About",
-    "nav.sports": "Sports",
-    "nav.join": "Join",
+    "nav.festival": "The Festival",
+    "nav.games": "The Games",
+    "nav.join": "Take Part",
 
-    "hero.eyebrow": "Gaelic games in Verona, Italy",
-    "hero.title": "Bringing Gaelic games to Verona",
-    "hero.sub": "A brand-new GAA club and community. Football, hurling, camogie — and plenty of craic. Whether you're Irish abroad, local, or brand new to the game, there's a place for you.",
-    "hero.ctaJoin": "Join the club",
-    "hero.ctaLearn": "Learn more",
+    "hero.eyebrow": "Gaelic games at the Tocatì Festival",
+    "hero.title": "The ancient games of Ireland — live in Verona",
+    "hero.sub": "Gaelic football, hurling and camogie come to Tocatì. Discover how they're played, what to watch for, and how to try them yourself.",
+    "hero.ctaJoin": "Discover the games",
+    "hero.ctaLearn": "About the festival",
+
+    "festival.kicker": "Brought to you by",
+    "festival.title": "The Tocatì Festival",
+    "festival.body": "Tocatì — “tòca-a-tì”, your turn — is Verona's international festival of street games. Since 2003 it has turned the city into a free, open celebration of traditional play from around the world.",
+    "festival.link": "Explore the festival",
+
+    "games.kicker": "Watch & learn",
+    "games.title": "The games we're bringing to Tocatì",
+    "games.intro": "Traditional Irish games and sports, played live in the streets. Tap any one to watch it in action and learn what you're seeing.",
+    "games.detailsLabel": "How it's played",
+    "games.tileCta": "Watch & learn",
+    "games.videoSoon": "Video coming soon",
+
+    "games.football.title": "Gaelic Football",
+    "games.football.sum": "A fast, skilful mix of soccer and rugby played with a round ball.",
+    "games.football.desc": "Fifteen players a side carry, bounce, kick and hand-pass the ball, scoring a point over the crossbar or a three-point goal into the net. Watch for the high catch and long, arcing kicks curling between the posts.",
+
+    "games.hurling.title": "Hurling",
+    "games.hurling.sum": "One of the world's oldest and fastest field sports, played with a stick and ball.",
+    "games.hurling.desc": "Played with a wooden stick (the hurley) and a small ball (the sliotar), struck along the ground or through the air at over 100 km/h. Watch for players catching a flying sliotar bare-handed and strikes sent the length of the field.",
+
+    "games.roadbowling.title": "Road Bowling",
+    "games.roadbowling.sum": "A country-road sport: hurl a small iron ball along the course in as few throws as possible.",
+    "games.roadbowling.desc": "Description coming soon — we're adding this shortly.",
+
+    "games.stonelifting.title": "Stone Lifting",
+    "games.stonelifting.sum": "A raw test of strength — lifting heavy stones, a tradition shared across many cultures.",
+    "games.stonelifting.desc": "Description coming soon — we're adding this shortly.",
+
+    "games.bataireacht.title": "Bataireacht",
+    "games.bataireacht.sum": "Traditional Irish stick-fighting, played with a wooden stick known as the bata.",
+    "games.bataireacht.desc": "Description coming soon — we're adding this shortly.",
+
+    "games.handball.title": "Handball",
+    "games.handball.sum": "A fast court game — strike a small ball against a wall with a gloved hand.",
+    "games.handball.desc": "Description coming soon — we're adding this shortly.",
+
+    "games.camogie.title": "Camogie",
+    "games.camogie.sum": "The women's game of hurling — skill, speed and serious craic.",
+    "games.camogie.desc": "The women's version of hurling, played with the same hurley and sliotar and almost identical rules, with over a century of history. Expect the same blistering skill and speed — first-touch control, overhead strikes and pinpoint scoring.",
+
+    "games.pocfada.title": "Poc Fada",
+    "games.pocfada.sum": "“The long puck” — send the sliotar over a set course in the fewest strikes of the hurley.",
+    "games.pocfada.desc": "Description coming soon — we're adding this shortly.",
+
+    "games.rounders.title": "Rounders",
+    "games.rounders.sum": "A bat-and-ball game and one of the four Gaelic games, cousin to baseball.",
+    "games.rounders.desc": "Description coming soon — we're adding this shortly.",
 
     "about.title": "A new home for Gaelic games in Veneto",
     "about.body": "We're building a welcoming club for everyone in and around Verona — Irish expats, Italians curious about Gaelic sport, students, families and friends. No experience needed. Come train, play, and be part of the community.",
@@ -38,8 +86,8 @@ window.I18N = {
     "tocati.body": "We're proud to take part in Tocatì, Verona's international festival of street games — sharing Gaelic football, hurling and camogie with the city and celebrating play in every language.",
     "tocati.link": "About Tocatì",
 
-    "join.title": "Register your interest",
-    "join.body": "Fill in the form below and we'll be in touch about training, events and how to get involved. It only takes a minute.",
+    "join.title": "Want to play, not just watch?",
+    "join.body": "Loved what you saw at Tocatì? Register your interest and we'll be in touch about training, events and how to get involved. It only takes a minute.",
 
     "form.role.label": "I'd like to register as",
     "form.role.player": "Player",
@@ -75,15 +123,63 @@ window.I18N = {
   },
 
   it: {
-    "nav.about": "Chi siamo",
-    "nav.sports": "Sport",
-    "nav.join": "Iscriviti",
+    "nav.festival": "Il Festival",
+    "nav.games": "Gli Sport",
+    "nav.join": "Partecipa",
 
-    "hero.eyebrow": "Sport gaelici a Verona, Italia",
-    "hero.title": "Portiamo gli sport gaelici a Verona",
-    "hero.sub": "Un nuovo club e una nuova comunità GAA. Calcio gaelico, hurling, camogie — e tanto divertimento. Che tu sia irlandese all'estero, del posto o alle prime armi, qui c'è posto per te.",
-    "hero.ctaJoin": "Unisciti al club",
-    "hero.ctaLearn": "Scopri di più",
+    "hero.eyebrow": "Sport gaelici al Festival Tocatì",
+    "hero.title": "Gli antichi giochi d'Irlanda — dal vivo a Verona",
+    "hero.sub": "Calcio gaelico, hurling e camogie arrivano a Tocatì. Scopri come si giocano, cosa osservare e come provarli di persona.",
+    "hero.ctaJoin": "Scopri gli sport",
+    "hero.ctaLearn": "Il festival",
+
+    "festival.kicker": "A cura del",
+    "festival.title": "Festival Tocatì",
+    "festival.body": "Tocatì — “tòca-a-tì”, tocca a te — è il festival internazionale dei giochi di strada di Verona. Dal 2003 trasforma la città in una festa gratuita e aperta del gioco tradizionale da tutto il mondo.",
+    "festival.link": "Scopri il festival",
+
+    "games.kicker": "Guarda e impara",
+    "games.title": "I giochi che portiamo a Tocatì",
+    "games.intro": "Giochi e sport tradizionali irlandesi, dal vivo nelle strade. Tocca un gioco per vederlo in azione e capire cosa stai guardando.",
+    "games.detailsLabel": "Come si gioca",
+    "games.tileCta": "Guarda e impara",
+    "games.videoSoon": "Video in arrivo",
+
+    "games.football.title": "Calcio Gaelico",
+    "games.football.sum": "Un mix veloce e tecnico di calcio e rugby giocato con un pallone rotondo.",
+    "games.football.desc": "Quindici giocatori per squadra portano, fanno rimbalzare, calciano e passano la palla di mano, segnando un punto sopra la traversa o un gol da tre punti in rete. Osserva la presa alta e i lunghi calci ad arco che si insinuano tra i pali.",
+
+    "games.hurling.title": "Hurling",
+    "games.hurling.sum": "Uno degli sport di campo più antichi e veloci al mondo, con bastone e palla.",
+    "games.hurling.desc": "Si gioca con un bastone di legno (l'hurley) e una pallina (lo sliotar), colpita a terra o in aria a oltre 100 km/h. Osserva i giocatori che afferrano lo sliotar al volo a mani nude e i colpi lanciati per tutta la lunghezza del campo.",
+
+    "games.roadbowling.title": "Road Bowling",
+    "games.roadbowling.sum": "Uno sport da strada di campagna: lanciare una pallina di ferro lungo il percorso nel minor numero di tiri.",
+    "games.roadbowling.desc": "Descrizione in arrivo — la aggiungeremo a breve.",
+
+    "games.stonelifting.title": "Sollevamento Pietre",
+    "games.stonelifting.sum": "Una prova di forza pura — sollevare pietre pesanti, una tradizione comune a molte culture.",
+    "games.stonelifting.desc": "Descrizione in arrivo — la aggiungeremo a breve.",
+
+    "games.bataireacht.title": "Bataireacht",
+    "games.bataireacht.sum": "L'antica arte irlandese del combattimento con il bastone, chiamato bata.",
+    "games.bataireacht.desc": "Descrizione in arrivo — la aggiungeremo a breve.",
+
+    "games.handball.title": "Handball",
+    "games.handball.sum": "Un veloce gioco di campo — colpire una pallina contro un muro con la mano guantata.",
+    "games.handball.desc": "Descrizione in arrivo — la aggiungeremo a breve.",
+
+    "games.camogie.title": "Camogie",
+    "games.camogie.sum": "La versione femminile dell'hurling — tecnica, velocità e tanto divertimento.",
+    "games.camogie.desc": "La versione femminile dell'hurling, con lo stesso hurley e sliotar e regole quasi identiche, e oltre un secolo di storia. Aspettati la stessa tecnica e velocità folgorante: controllo di primo tocco, colpi al volo e precisione nel punteggio.",
+
+    "games.pocfada.title": "Poc Fada",
+    "games.pocfada.sum": "“Il colpo lungo” — mandare lo sliotar lungo un percorso con il minor numero di colpi di hurley.",
+    "games.pocfada.desc": "Descrizione in arrivo — la aggiungeremo a breve.",
+
+    "games.rounders.title": "Rounders",
+    "games.rounders.sum": "Un gioco con mazza e palla e uno dei quattro sport gaelici, cugino del baseball.",
+    "games.rounders.desc": "Descrizione in arrivo — la aggiungeremo a breve.",
 
     "about.title": "Una nuova casa per gli sport gaelici in Veneto",
     "about.body": "Stiamo creando un club accogliente per tutti a Verona e dintorni — irlandesi all'estero, italiani curiosi degli sport gaelici, studenti, famiglie e amici. Nessuna esperienza richiesta. Vieni ad allenarti, a giocare e a far parte della comunità.",
@@ -102,8 +198,8 @@ window.I18N = {
     "sports.camogie.title": "Camogie",
     "sports.camogie.body": "La versione femminile dell'hurling — tecnica, velocità e tanto divertimento.",
 
-    "join.title": "Registra il tuo interesse",
-    "join.body": "Compila il modulo qui sotto e ti contatteremo per allenamenti, eventi e come partecipare. Bastano pochi minuti.",
+    "join.title": "Vuoi giocare, non solo guardare?",
+    "join.body": "Ti è piaciuto ciò che hai visto a Tocatì? Registra il tuo interesse e ti contatteremo per allenamenti, eventi e come partecipare. Bastano pochi minuti.",
 
     "form.role.label": "Vorrei registrarmi come",
     "form.role.player": "Giocatore/trice",
@@ -132,6 +228,12 @@ window.I18N = {
     "form.success": "Grazie! Abbiamo ricevuto i tuoi dati e ti contatteremo presto. 🍀",
     "form.error": "Spiacenti, si è verificato un errore nell'invio dei dati. Riprova.",
 
+    "gge.kicker": "Con orgoglio parte di",
+    "gge.title": "Gaelic Games Europe",
+    "gge.body": "Verona GAA è un club affiliato a Gaelic Games Europe — l'organo di governo del calcio gaelico, dell'hurling e del camogie in tutto il continente.",
+    "gge.link": "Visita gaelicgameseurope.com →",
+
+    "footer.gge": "Membro di Gaelic Games Europe",
     "footer.location": "Verona, Italia",
     "footer.tagline": "Sport gaelici · comunità · divertimento"
   }

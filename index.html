@@ -7,7 +7,7 @@
   <meta name="description" content="Verona GAA — a new Gaelic Athletic Association club and community in Verona, Italy. Gaelic football, hurling, camogie and craic. All welcome." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&family=Sen:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700;9..144,900&family=Poppins:wght@400;500;600;700;800&family=Sen:wght@400;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
@@ -17,10 +17,13 @@
       <img src="assets/crest.png" alt="Verona GAA crest" class="brand-crest" onerror="this.style.display='none'" />
       <span class="brand-name">Verona&nbsp;GAA</span>
     </a>
-    <nav class="site-nav">
-      <a href="#about" data-i18n="nav.about">About</a>
-      <a href="#sports" data-i18n="nav.sports">Sports</a>
-      <a href="#join" data-i18n="nav.join">Join</a>
+    <button class="nav-toggle" type="button" aria-label="Menu" aria-expanded="false" aria-controls="site-nav">
+      <span></span><span></span><span></span>
+    </button>
+    <nav class="site-nav" id="site-nav">
+      <a href="#festival" data-i18n="nav.festival">The Festival</a>
+      <a href="#games" data-i18n="nav.games">The Games</a>
+      <a href="#join" data-i18n="nav.join">Take Part</a>
     </nav>
     <div class="lang-switch" role="group" aria-label="Language">
       <button type="button" data-lang="en" class="lang-btn is-active" aria-pressed="true">EN</button>
@@ -36,26 +39,239 @@
       <h1 data-i18n="hero.title">Bringing Gaelic games to Verona</h1>
       <p class="hero-sub" data-i18n="hero.sub">A brand-new GAA club and community. Football, hurling, camogie — and plenty of craic. Whether you're Irish abroad, local, or brand new to the game, there's a place for you.</p>
       <div class="hero-cta">
-        <a href="#join" class="btn btn-primary" data-i18n="hero.ctaJoin">Join the club</a>
-        <a href="#about" class="btn btn-ghost" data-i18n="hero.ctaLearn">Learn more</a>
+        <a href="#games" class="btn btn-primary" data-i18n="hero.ctaJoin">Discover the games</a>
+        <a href="#festival" class="btn btn-ghost" data-i18n="hero.ctaLearn">About the festival</a>
+      </div>
+    </div>
+    <a href="#about" class="hero-scroll" aria-label="Scroll down">
+      <span class="hero-scroll-dot"></span>
+    </a>
+  </section>
+
+  <!-- ===== Brought to you by Tocatì ===== -->
+  <section class="festival" id="festival">
+    <div class="festival-inner">
+      <div class="festival-logo-wrap">
+        <img src="assets/tocati-festival-logo.jpg" alt="Tocatì Festival logo" class="festival-logo"
+             onerror="this.onerror=null; this.closest('.festival-logo-wrap').style.display='none';" />
+      </div>
+      <div class="festival-text">
+        <p class="eyebrow festival-kicker" data-i18n="festival.kicker">Brought to you by</p>
+        <h2 data-i18n="festival.title">The Tocatì Festival</h2>
+        <p class="festival-body" data-i18n="festival.body">Tocatì — “tòca-a-tì”, your turn — is Verona's international festival of street games. Since 2003 it has turned the city into a free, open celebration of traditional play from around the world.</p>
+      </div>
+      <div class="festival-cta">
+        <a class="btn btn-primary" href="https://tocati.it/en/" target="_blank" rel="noopener" data-i18n="festival.link">Explore the festival</a>
       </div>
     </div>
   </section>
 
-  <!-- ===== Affiliation: Gaelic Games Europe ===== -->
-  <section class="affiliation" id="gge">
-    <div class="affiliation-inner">
-      <img src="assets/gge-crest.png" alt="Gaelic Games Europe crest" class="gge-crest" onerror="this.style.display='none'" />
-      <div class="affiliation-text">
-        <p class="affiliation-kicker" data-i18n="gge.kicker">Proudly part of</p>
-        <h2 class="affiliation-title" data-i18n="gge.title">Gaelic Games Europe</h2>
-        <p class="affiliation-body" data-i18n="gge.body">Verona GAA is a member club of Gaelic Games Europe — the governing body for Gaelic football, hurling and camogie across the continent.</p>
-        <a class="affiliation-link" href="https://gaelicgameseurope.com/" target="_blank" rel="noopener" data-i18n="gge.link">Visit gaelicgameseurope.com →</a>
+  <!-- ===== The Games — photo scroller + lightbox ("What is hurling?") =====
+       ADD A PHOTO:  drop a JPG in assets/games/<slug>.jpg and, in that game's
+                     <span class="tile-thumb">, add <img src="assets/games/<slug>.jpg" alt="">
+                     as the first child. It covers the colour placeholder automatically.
+       ADD A VIDEO:  in that game's <div class="tile-detail">, replace the
+                     <div class="game-video game-video--empty">…</div> with:
+                       <div class="game-video"><iframe src="https://www.youtube.com/embed/ID"
+                         title="…" loading="lazy" allowfullscreen></iframe></div>
+       EDIT TEXT:    change the games.<slug>.* strings in i18n.js (en AND it).
+       ============================================================ -->
+  <section class="section section-alt" id="games">
+    <div class="section-inner">
+      <p class="eyebrow" data-i18n="games.kicker">Watch &amp; learn</p>
+      <h2 data-i18n="games.title">The games we're bringing to Tocatì</h2>
+      <p class="lead games-intro" data-i18n="games.intro">Traditional Irish games and sports, played live in the streets. Tap any one to watch it in action and learn what you're seeing.</p>
+    </div>
+
+    <div class="games-rail-wrap">
+      <ul class="games-rail" id="games-rail">
+        <li class="game-tile">
+          <button class="tile-btn" type="button" data-game="football" aria-haspopup="dialog">
+            <span class="tile-thumb" data-thumb="football">
+              <!-- Add a photo: insert <img src="assets/games/football.jpg" alt=""> as the FIRST child of this span -->
+              <span class="tile-num">01</span>
+              <span class="tile-play" aria-hidden="true"></span>
+            </span>
+            <span class="tile-body">
+              <span class="tile-title" data-i18n="games.football.title">Gaelic Football</span>
+              <span class="tile-sum" data-i18n="games.football.sum">A fast, skilful mix of soccer and rugby played with a round ball.</span>
+              <span class="tile-cta"><span data-i18n="games.tileCta">Watch &amp; learn</span> &rarr;</span>
+            </span>
+          </button>
+          <div class="tile-detail" hidden>
+            <div class="game-video game-video--empty"><span data-i18n="games.videoSoon">Video coming soon</span></div>
+            <p class="game-desc" data-i18n="games.football.desc">Fifteen players a side carry, bounce, kick and hand-pass the ball, scoring a point over the crossbar or a three-point goal into the net. Watch for the high catch and long, arcing kicks curling between the posts.</p>
+          </div>
+        </li>
+
+        <li class="game-tile">
+          <button class="tile-btn" type="button" data-game="hurling" aria-haspopup="dialog">
+            <span class="tile-thumb" data-thumb="hurling">
+              <!-- Add a photo: insert <img src="assets/games/hurling.jpg" alt=""> as the FIRST child of this span -->
+              <span class="tile-num">02</span>
+              <span class="tile-play" aria-hidden="true"></span>
+            </span>
+            <span class="tile-body">
+              <span class="tile-title" data-i18n="games.hurling.title">Hurling</span>
+              <span class="tile-sum" data-i18n="games.hurling.sum">One of the world's oldest and fastest field sports, played with a stick and ball.</span>
+              <span class="tile-cta"><span data-i18n="games.tileCta">Watch &amp; learn</span> &rarr;</span>
+            </span>
+          </button>
+          <div class="tile-detail" hidden>
+            <div class="game-video game-video--empty"><span data-i18n="games.videoSoon">Video coming soon</span></div>
+            <p class="game-desc" data-i18n="games.hurling.desc">Played with a wooden stick (the hurley) and a small ball (the sliotar), struck along the ground or through the air at over 100 km/h. Watch for players catching a flying sliotar bare-handed and strikes sent the length of the field.</p>
+          </div>
+        </li>
+
+        <li class="game-tile">
+          <button class="tile-btn" type="button" data-game="roadbowling" aria-haspopup="dialog">
+            <span class="tile-thumb" data-thumb="roadbowling">
+              <!-- Add a photo: insert <img src="assets/games/roadbowling.jpg" alt=""> as the FIRST child of this span -->
+              <span class="tile-num">03</span>
+              <span class="tile-play" aria-hidden="true"></span>
+            </span>
+            <span class="tile-body">
+              <span class="tile-title" data-i18n="games.roadbowling.title">Road Bowling</span>
+              <span class="tile-sum" data-i18n="games.roadbowling.sum">A country-road sport: hurl a small iron ball along the course in as few throws as possible.</span>
+              <span class="tile-cta"><span data-i18n="games.tileCta">Watch &amp; learn</span> &rarr;</span>
+            </span>
+          </button>
+          <div class="tile-detail" hidden>
+            <div class="game-video game-video--empty"><span data-i18n="games.videoSoon">Video coming soon</span></div>
+            <p class="game-desc" data-i18n="games.roadbowling.desc">Description coming soon — we're adding this shortly.</p>
+          </div>
+        </li>
+
+        <li class="game-tile">
+          <button class="tile-btn" type="button" data-game="stonelifting" aria-haspopup="dialog">
+            <span class="tile-thumb" data-thumb="stonelifting">
+              <!-- Add a photo: insert <img src="assets/games/stonelifting.jpg" alt=""> as the FIRST child of this span -->
+              <span class="tile-num">04</span>
+              <span class="tile-play" aria-hidden="true"></span>
+            </span>
+            <span class="tile-body">
+              <span class="tile-title" data-i18n="games.stonelifting.title">Stone Lifting</span>
+              <span class="tile-sum" data-i18n="games.stonelifting.sum">A raw test of strength — lifting heavy stones, a tradition shared across many cultures.</span>
+              <span class="tile-cta"><span data-i18n="games.tileCta">Watch &amp; learn</span> &rarr;</span>
+            </span>
+          </button>
+          <div class="tile-detail" hidden>
+            <div class="game-video game-video--empty"><span data-i18n="games.videoSoon">Video coming soon</span></div>
+            <p class="game-desc" data-i18n="games.stonelifting.desc">Description coming soon — we're adding this shortly.</p>
+          </div>
+        </li>
+
+        <li class="game-tile">
+          <button class="tile-btn" type="button" data-game="bataireacht" aria-haspopup="dialog">
+            <span class="tile-thumb" data-thumb="bataireacht">
+              <!-- Add a photo: insert <img src="assets/games/bataireacht.jpg" alt=""> as the FIRST child of this span -->
+              <span class="tile-num">05</span>
+              <span class="tile-play" aria-hidden="true"></span>
+            </span>
+            <span class="tile-body">
+              <span class="tile-title" data-i18n="games.bataireacht.title">Bataireacht</span>
+              <span class="tile-sum" data-i18n="games.bataireacht.sum">Traditional Irish stick-fighting, played with a wooden stick known as the bata.</span>
+              <span class="tile-cta"><span data-i18n="games.tileCta">Watch &amp; learn</span> &rarr;</span>
+            </span>
+          </button>
+          <div class="tile-detail" hidden>
+            <div class="game-video game-video--empty"><span data-i18n="games.videoSoon">Video coming soon</span></div>
+            <p class="game-desc" data-i18n="games.bataireacht.desc">Description coming soon — we're adding this shortly.</p>
+          </div>
+        </li>
+
+        <li class="game-tile">
+          <button class="tile-btn" type="button" data-game="handball" aria-haspopup="dialog">
+            <span class="tile-thumb" data-thumb="handball">
+              <!-- Add a photo: insert <img src="assets/games/handball.jpg" alt=""> as the FIRST child of this span -->
+              <span class="tile-num">06</span>
+              <span class="tile-play" aria-hidden="true"></span>
+            </span>
+            <span class="tile-body">
+              <span class="tile-title" data-i18n="games.handball.title">Handball</span>
+              <span class="tile-sum" data-i18n="games.handball.sum">A fast court game — strike a small ball against a wall with a gloved hand.</span>
+              <span class="tile-cta"><span data-i18n="games.tileCta">Watch &amp; learn</span> &rarr;</span>
+            </span>
+          </button>
+          <div class="tile-detail" hidden>
+            <div class="game-video game-video--empty"><span data-i18n="games.videoSoon">Video coming soon</span></div>
+            <p class="game-desc" data-i18n="games.handball.desc">Description coming soon — we're adding this shortly.</p>
+          </div>
+        </li>
+
+        <li class="game-tile">
+          <button class="tile-btn" type="button" data-game="camogie" aria-haspopup="dialog">
+            <span class="tile-thumb" data-thumb="camogie">
+              <!-- Add a photo: insert <img src="assets/games/camogie.jpg" alt=""> as the FIRST child of this span -->
+              <span class="tile-num">07</span>
+              <span class="tile-play" aria-hidden="true"></span>
+            </span>
+            <span class="tile-body">
+              <span class="tile-title" data-i18n="games.camogie.title">Camogie</span>
+              <span class="tile-sum" data-i18n="games.camogie.sum">The women's game of hurling — skill, speed and serious craic.</span>
+              <span class="tile-cta"><span data-i18n="games.tileCta">Watch &amp; learn</span> &rarr;</span>
+            </span>
+          </button>
+          <div class="tile-detail" hidden>
+            <div class="game-video game-video--empty"><span data-i18n="games.videoSoon">Video coming soon</span></div>
+            <p class="game-desc" data-i18n="games.camogie.desc">The women's version of hurling, played with the same hurley and sliotar and almost identical rules, with over a century of history. Expect the same blistering skill and speed — first-touch control, overhead strikes and pinpoint scoring.</p>
+          </div>
+        </li>
+
+        <li class="game-tile">
+          <button class="tile-btn" type="button" data-game="pocfada" aria-haspopup="dialog">
+            <span class="tile-thumb" data-thumb="pocfada">
+              <!-- Add a photo: insert <img src="assets/games/pocfada.jpg" alt=""> as the FIRST child of this span -->
+              <span class="tile-num">08</span>
+              <span class="tile-play" aria-hidden="true"></span>
+            </span>
+            <span class="tile-body">
+              <span class="tile-title" data-i18n="games.pocfada.title">Poc Fada</span>
+              <span class="tile-sum" data-i18n="games.pocfada.sum">“The long puck” — send the sliotar over a set course in the fewest strikes of the hurley.</span>
+              <span class="tile-cta"><span data-i18n="games.tileCta">Watch &amp; learn</span> &rarr;</span>
+            </span>
+          </button>
+          <div class="tile-detail" hidden>
+            <div class="game-video game-video--empty"><span data-i18n="games.videoSoon">Video coming soon</span></div>
+            <p class="game-desc" data-i18n="games.pocfada.desc">Description coming soon — we're adding this shortly.</p>
+          </div>
+        </li>
+
+        <li class="game-tile">
+          <button class="tile-btn" type="button" data-game="rounders" aria-haspopup="dialog">
+            <span class="tile-thumb" data-thumb="rounders">
+              <!-- Add a photo: insert <img src="assets/games/rounders.jpg" alt=""> as the FIRST child of this span -->
+              <span class="tile-num">09</span>
+              <span class="tile-play" aria-hidden="true"></span>
+            </span>
+            <span class="tile-body">
+              <span class="tile-title" data-i18n="games.rounders.title">Rounders</span>
+              <span class="tile-sum" data-i18n="games.rounders.sum">A bat-and-ball game and one of the four Gaelic games, cousin to baseball.</span>
+              <span class="tile-cta"><span data-i18n="games.tileCta">Watch &amp; learn</span> &rarr;</span>
+            </span>
+          </button>
+          <div class="tile-detail" hidden>
+            <div class="game-video game-video--empty"><span data-i18n="games.videoSoon">Video coming soon</span></div>
+            <p class="game-desc" data-i18n="games.rounders.desc">Description coming soon — we're adding this shortly.</p>
+          </div>
+        </li>
+      </ul>
+      <button class="rail-nav rail-prev" type="button" aria-label="Scroll left">&lsaquo;</button>
+      <button class="rail-nav rail-next" type="button" aria-label="Scroll right">&rsaquo;</button>
+    </div>
+
+    <!-- Lightbox -->
+    <div class="game-modal" id="game-modal" hidden>
+      <div class="game-modal-backdrop" data-close></div>
+      <div class="game-modal-card" role="dialog" aria-modal="true" aria-labelledby="game-modal-title">
+        <button class="game-modal-close" type="button" data-close aria-label="Close">&times;</button>
+        <h3 class="game-modal-title" id="game-modal-title"></h3>
+        <div class="game-modal-body"></div>
       </div>
     </div>
   </section>
 
-  <!-- ===== About ===== -->
+  <!-- ===== About / come and play ===== -->
   <section class="section" id="about">
     <div class="section-inner">
       <h2 data-i18n="about.title">A new home for Gaelic games in Veneto</h2>
@@ -76,40 +292,6 @@
           <h3 data-i18n="about.card3.title">All welcome</h3>
           <p data-i18n="about.card3.body">English and Italian speakers alike — everyone is welcome to get involved.</p>
         </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ===== Sports ===== -->
-  <section class="section section-alt" id="sports">
-    <div class="section-inner">
-      <h2 data-i18n="sports.title">The games we play</h2>
-      <div class="sports-grid">
-        <div class="sport">
-          <h3 data-i18n="sports.football.title">Gaelic Football</h3>
-          <p data-i18n="sports.football.body">A fast, skilful mix of soccer and rugby played with a round ball.</p>
-        </div>
-        <div class="sport">
-          <h3 data-i18n="sports.hurling.title">Hurling</h3>
-          <p data-i18n="sports.hurling.body">One of the world's oldest and fastest field sports, played with a stick and ball.</p>
-        </div>
-        <div class="sport">
-          <h3 data-i18n="sports.camogie.title">Camogie</h3>
-          <p data-i18n="sports.camogie.body">The women's game of hurling — skill, speed and serious craic.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ===== Tocatì festival ===== -->
-  <section class="section" id="tocati">
-    <div class="section-inner tocati-inner">
-      <img src="assets/tocati-logo.svg" alt="Tocatì festival logo" class="tocati-logo" />
-      <div class="tocati-text">
-        <p class="eyebrow" style="color: var(--brand);" data-i18n="tocati.kicker">Out in the city</p>
-        <h2 data-i18n="tocati.title">Bringing our games to Tocatì</h2>
-        <p class="lead" data-i18n="tocati.body">We're proud to take part in Tocatì, Verona's international festival of street games — sharing Gaelic football, hurling and camogie with the city and celebrating play in every language.</p>
-        <a class="btn btn-primary" href="https://www.tocati.it/" target="_blank" rel="noopener" data-i18n="tocati.link">About Tocatì</a>
       </div>
     </div>
   </section>
@@ -196,6 +378,19 @@
         <button type="submit" class="btn btn-primary btn-block" data-i18n="form.submit">Send</button>
         <p class="form-note" data-i18n="form.note">We'll never share your details. You can unsubscribe any time.</p>
       </form>
+    </div>
+  </section>
+
+  <!-- ===== Affiliation: Gaelic Games Europe (governing body) ===== -->
+  <section class="affiliation" id="gge">
+    <div class="affiliation-inner">
+      <img src="assets/gge-crest.png" alt="Gaelic Games Europe crest" class="gge-crest" onerror="this.style.display='none'" />
+      <div class="affiliation-text">
+        <p class="affiliation-kicker" data-i18n="gge.kicker">Proudly part of</p>
+        <h2 class="affiliation-title" data-i18n="gge.title">Gaelic Games Europe</h2>
+        <p class="affiliation-body" data-i18n="gge.body">Verona GAA is a member club of Gaelic Games Europe — the governing body for Gaelic football, hurling and camogie across the continent.</p>
+        <a class="affiliation-link" href="https://gaelicgameseurope.com/" target="_blank" rel="noopener" data-i18n="gge.link">Visit gaelicgameseurope.com →</a>
+      </div>
     </div>
   </section>
 

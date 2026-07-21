@@ -7,3 +7,9 @@ Thumbs.db
 
 # Local env / secrets (don't commit the Power Automate URL if it's sensitive)
 .env
+
+# Claude Code local config
+.claude/
+
+# Vercel
+.vercel

@@ -174,8 +174,144 @@
     form.replaceChildren(note);
   }
 
+  // Progressive-enhancement motion: scroll reveals + condensing header.
+  function initMotion() {
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    // Condense the sticky header once the hero scrolls past.
+    const header = document.querySelector(".site-header");
+    if (header) {
+      const onScroll = () => header.classList.toggle("is-stuck", window.scrollY > 24);
+      window.addEventListener("scroll", onScroll, { passive: true });
+      onScroll();
+    }
+
+    if (reduce || !("IntersectionObserver" in window)) return;
+
+    // Tag the elements we want to fade up, with a light stagger per group.
+    const groups = [
+      ".festival-inner > *",
+      ".affiliation-inner > *",
+      ".section-inner > .eyebrow",
+      ".section-inner > h2",
+      ".section-inner > .lead",
+      ".card",
+      ".games-rail-wrap",
+      ".join-form",
+    ];
+    document.body.classList.add("js-reveal");
+    groups.forEach((sel) => {
+      document.querySelectorAll(sel).forEach((el, i) => {
+        el.setAttribute("data-reveal", "");
+        el.style.transitionDelay = Math.min(i * 80, 320) + "ms";
+      });
+    });
+
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("is-in");
+            io.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.12, rootMargin: "0px 0px -8% 0px" }
+    );
+    document.querySelectorAll("[data-reveal]").forEach((el) => io.observe(el));
+  }
+
+  // Games scroller + lightbox. Each tile holds a hidden .tile-detail
+  // (video + description); opening the modal moves that live node into the
+  // dialog (so language switching keeps working) and returns it on close.
+  function initGames() {
+    const modal = document.getElementById("game-modal");
+    const rail = document.getElementById("games-rail");
+    if (!modal) return;
+
+    const body = modal.querySelector(".game-modal-body");
+    const titleEl = modal.querySelector(".game-modal-title");
+    let sourceTile = null;
+    let lastFocus = null;
+
+    function openModal(tile) {
+      const detail = tile.querySelector(".tile-detail");
+      const title = tile.querySelector(".tile-title");
+      if (!detail) return;
+      titleEl.textContent = title ? title.textContent : "";
+      detail.hidden = false;
+      body.appendChild(detail);
+      sourceTile = tile;
+      lastFocus = document.activeElement;
+      modal.hidden = false;
+      document.body.style.overflow = "hidden";
+      const close = modal.querySelector(".game-modal-close");
+      if (close) close.focus();
+    }
+
+    function closeModal() {
+      const detail = body.querySelector(".tile-detail");
+      if (detail && sourceTile) {
+        // Stop any playing media before tucking the node back into its tile.
+        const f = detail.querySelector("iframe");
+        if (f) f.src = f.src;
+        const v = detail.querySelector("video");
+        if (v && !v.paused) v.pause();
+        detail.hidden = true;
+        sourceTile.appendChild(detail);
+      }
+      modal.hidden = true;
+      document.body.style.overflow = "";
+      if (lastFocus) lastFocus.focus();
+      sourceTile = null;
+    }
+
+    document.querySelectorAll(".tile-btn").forEach((btn) => {
+      btn.addEventListener("click", () => openModal(btn.closest(".game-tile")));
+    });
+    modal.querySelectorAll("[data-close]").forEach((el) =>
+      el.addEventListener("click", closeModal)
+    );
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && !modal.hidden) closeModal();
+    });
+
+    // Prev / next arrows scroll the rail by roughly one card.
+    if (rail) {
+      const step = () => {
+        const card = rail.querySelector(".game-tile");
+        const w = card ? card.getBoundingClientRect().width + 21 : rail.clientWidth * 0.8;
+        return w;
+      };
+      const prev = modal.closest("#games").querySelector(".rail-prev");
+      const next = modal.closest("#games").querySelector(".rail-next");
+      if (prev) prev.addEventListener("click", () => rail.scrollBy({ left: -step(), behavior: "smooth" }));
+      if (next) next.addEventListener("click", () => rail.scrollBy({ left: step(), behavior: "smooth" }));
+    }
+  }
+
+  // Mobile navigation: hamburger toggles the nav as a dropdown under the header.
+  function initNav() {
+    const header = document.querySelector(".site-header");
+    const toggle = document.querySelector(".nav-toggle");
+    const nav = document.getElementById("site-nav");
+    if (!header || !toggle || !nav) return;
+
+    function set(open) {
+      header.classList.toggle("nav-open", open);
+      toggle.setAttribute("aria-expanded", open ? "true" : "false");
+    }
+    toggle.addEventListener("click", () => set(!header.classList.contains("nav-open")));
+    nav.querySelectorAll("a").forEach((a) => a.addEventListener("click", () => set(false)));
+    document.addEventListener("keydown", (e) => { if (e.key === "Escape") set(false); });
+    window.addEventListener("resize", () => { if (window.innerWidth > 720) set(false); });
+  }
+
   document.addEventListener("DOMContentLoaded", () => {
     initLang();
     initForm();
+    initMotion();
+    initGames();
+    initNav();
   });
 })();
