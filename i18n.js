@@ -124,7 +124,7 @@ window.I18N = {
     "form.interest.unsure": "Not sure yet",
     "form.consent": "I'm happy for Verona GAA to contact me about the club.",
     "form.submit": "Send",
-    "form.note": "We'll never share your details. You can unsubscribe any time.",
+    "form.note": "We only use your details to contact you about Verona GAA — we never share them, and you can ask us to delete your data at any time. Under-18s must be registered by a parent or guardian.",
     "form.success": "Thanks! We've got your details and we'll be in touch soon. 🍀",
     "form.error": "Sorry, something went wrong sending your details. Please try again.",
 
@@ -248,7 +248,7 @@ window.I18N = {
     "form.interest.unsure": "Non ancora sicuro/a",
     "form.consent": "Acconsento a essere contattato/a da Verona GAA riguardo al club.",
     "form.submit": "Invia",
-    "form.note": "Non condivideremo mai i tuoi dati. Puoi annullare l'iscrizione in qualsiasi momento.",
+    "form.note": "Usiamo i tuoi dati solo per contattarti riguardo a Verona GAA — non li condividiamo mai e puoi chiederci di cancellarli in qualsiasi momento. I minori di 18 anni devono essere registrati da un genitore o tutore.",
     "form.success": "Grazie! Abbiamo ricevuto i tuoi dati e ti contatteremo presto. 🍀",
     "form.error": "Spiacenti, si è verificato un errore nell'invio dei dati. Riprova.",
 
