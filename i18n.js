@@ -113,7 +113,7 @@ window.I18N = {
     "tocati.body": "We're proud to take part in Tocatì, Verona's international festival of street games — sharing Gaelic football, hurling and camogie with the city and celebrating play in every language.",
     "tocati.link": "About Tocatì",
 
-    "join.title": "Get involved — everyone's welcome",
+    "join.title": "We're building a community, not just a team",
     "join.body": "Player, social member, volunteer or supporter — there's a place for everyone at Gaelic Games Verona. Register your interest and we'll be in touch. We're just getting started, with plenty more to come.",
 
     "form.role.label": "How would you like to get involved?",
@@ -262,7 +262,7 @@ window.I18N = {
     "sports.camogie.title": "Camogie",
     "sports.camogie.body": "La versione femminile dell'hurling — tecnica, velocità e tanto divertimento.",
 
-    "join.title": "Partecipa — tutti sono i benvenuti",
+    "join.title": "Stiamo costruendo una comunità, non solo una squadra",
     "join.body": "Giocatore, socio, volontario o semplice sostenitore — a Gaelic Games Verona c'è posto per tutti. Registra il tuo interesse e ti contatteremo. Siamo solo all'inizio, con tante novità in arrivo.",
 
     "form.role.label": "Come vorresti partecipare?",
