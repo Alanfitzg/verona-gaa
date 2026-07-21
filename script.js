@@ -34,9 +34,8 @@
   function initLang() {
     let lang = null;
     try { lang = localStorage.getItem(STORAGE_KEY); } catch (e) {}
-    if (!lang) {
-      lang = (navigator.language || "en").toLowerCase().startsWith("it") ? "it" : "en";
-    }
+    // Italian is the default; a returning visitor's saved choice still wins.
+    if (lang !== "en" && lang !== "it") lang = "it";
     applyLang(lang);
 
     document.querySelectorAll(".lang-btn").forEach((btn) => {
