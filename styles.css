@@ -663,8 +663,8 @@ a { color: inherit; }
   .lang-btn { color: rgba(255,255,255,.8); }
   .lang-btn:hover { color: #fff; }
 
-  /* Trim hero: smaller headline, no subtext */
-  .hero h1 { font-size: clamp(1.9rem, 7.5vw, 2.4rem); text-align: left; margin-bottom: 1.3rem; }
+  /* Trim hero: restrained headline so the PHOTO is the hero, not the text */
+  .hero h1 { font-size: clamp(1.35rem, 5.4vw, 1.8rem); line-height: 1.14; text-align: left; margin-bottom: 1.3rem; }
   .hero-sub { display: none; }
   .hero-cta--desktop { display: none; }
 
@@ -684,7 +684,7 @@ a { color: inherit; }
         rgba(6,16,46,.80) 100%),
       url("assets/verona-hero.jpg");
     background-blend-mode: normal;
-    background-position: center 46%;
+    background-position: center 40%;
   }
   .hero::after { display: none; }          /* drop the centred gold glow */
   .hero-crest { display: none; }           /* the crest already lives in the header */
