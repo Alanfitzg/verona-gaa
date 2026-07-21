@@ -654,29 +654,39 @@ a { color: inherit; }
   .lang-btn { color: rgba(255,255,255,.8); }
   .lang-btn:hover { color: #fff; }
 
-  /* Trim hero: smaller headline, no subtext, mobile CTAs */
-  .hero h1 { font-size: clamp(1.9rem, 7.5vw, 2.4rem); text-align: left; }
+  /* Trim hero: smaller headline, no subtext */
+  .hero h1 { font-size: clamp(1.9rem, 7.5vw, 2.4rem); text-align: left; margin-bottom: 1.3rem; }
   .hero-sub { display: none; }
   .hero-cta--desktop { display: none; }
-  .hero-cta--mobile { display: flex; flex-direction: column; align-items: flex-start; gap: .8rem; }
 
-  /* Elite hero: dedupe the crest, reveal the Verona photo, anchor content bottom-left */
+  /* Mobile hero: content pinned to the TOP, photo appreciated below.
+     Scrim darkens BOTH the top (for the text) and the bottom (to frame it). */
   .hero {
-    justify-content: flex-end; text-align: left;
-    padding-top: 5.5rem; padding-bottom: clamp(2.4rem, 7vh, 3.6rem);
+    flex-direction: column; justify-content: flex-start; align-items: stretch;
+    text-align: left;
+    padding-top: 5.5rem; padding-bottom: 3rem;
     background-image:
-      linear-gradient(to top, rgba(6,16,46,.95) 2%, rgba(6,16,46,.55) 32%, rgba(6,16,46,.06) 62%, rgba(6,16,46,.34) 100%),
+      linear-gradient(to bottom,
+        rgba(6,16,46,.92) 0%,
+        rgba(6,16,46,.66) 20%,
+        rgba(6,16,46,.22) 40%,
+        rgba(6,16,46,0)   58%,
+        rgba(6,16,46,.34) 82%,
+        rgba(6,16,46,.80) 100%),
       url("assets/verona-hero.jpg");
     background-blend-mode: normal;
-    background-position: center 26%;
+    background-position: center 46%;
   }
   .hero::after { display: none; }          /* drop the centred gold glow */
   .hero-crest { display: none; }           /* the crest already lives in the header */
-  .hero-scroll { display: none; }          /* declutter — content now sits at the bottom */
+  .hero-scroll { display: none; }          /* declutter */
   .hero-inner { margin: 0; max-width: 100%; }
-  .hero .eyebrow { justify-content: flex-start; }
+  .hero .eyebrow { justify-content: flex-start; margin-bottom: 1rem; }
   .hero .eyebrow::after { display: none; } /* one leading accent when left-aligned */
-  .hero-cta { justify-content: flex-start; }
+
+  /* Buttons side by side in one row, sharing the width equally */
+  .hero-cta, .hero-cta--mobile { display: flex; flex-direction: row; align-items: stretch; gap: .6rem; width: 100%; }
+  .hero-cta--mobile .btn { flex: 1; padding: .9rem .55rem; font-size: .9rem; }
 }
 @media (max-width: 400px) {
   .brand-name { font-size: 1.05rem; }
