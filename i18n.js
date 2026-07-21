@@ -129,6 +129,7 @@ window.I18N = {
     "form.error": "Sorry, something went wrong sending your details. Please try again.",
 
     "footer.gge": "Member of Gaelic Games Europe",
+    "footer.login": "Committee login",
     "footer.location": "Verona, Italy",
     "footer.tagline": "Gaelic games · community · craic",
     "footer.credit": "Verona panorama © Livioandronico2013, CC BY-SA 4.0."
@@ -258,6 +259,7 @@ window.I18N = {
     "gge.link": "Visita gaelicgameseurope.com →",
 
     "footer.gge": "Membro di Gaelic Games Europe",
+    "footer.login": "Area riservata",
     "footer.location": "Verona, Italia",
     "footer.tagline": "Sport gaelici · comunità · divertimento"
   }
