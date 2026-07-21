@@ -22,8 +22,17 @@
     a { color:var(--brand); }
 
     /* ---- Gate ---- */
-    .gate { min-height:100vh; display:grid; place-items:center; padding:1.5rem; }
-    .gate-card { width:min(400px,100%); background:var(--card); border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow); padding:2rem; text-align:center; }
+    .gate {
+      min-height:100vh; display:grid; place-items:center; padding:1.5rem;
+      background:
+        radial-gradient(760px 460px at 50% -12%, rgba(47,87,201,.55), transparent 62%),
+        linear-gradient(160deg, #0d1f57 0%, #081439 100%);
+    }
+    .gate-wrap { display:flex; flex-direction:column; align-items:center; }
+    .gate-card { position:relative; overflow:hidden; width:min(400px,100%); background:var(--card); border-radius:var(--radius); box-shadow:0 30px 70px -22px rgba(0,0,0,.55); padding:2.5rem 2rem 2.2rem; text-align:center; }
+    .gate-card::before { content:""; position:absolute; top:0; left:0; right:0; height:4px; background:linear-gradient(90deg,#f6b40e,#ffd45e,#f6b40e); }
+    .gate-back { display:inline-flex; align-items:center; gap:.4rem; margin-top:1.4rem; color:rgba(255,255,255,.72); text-decoration:none; font-family:var(--font-head); font-weight:600; font-size:.85rem; transition:color .2s; }
+    .gate-back:hover { color:#fff; }
     .gate-card h1 { font-family:var(--font-display); font-weight:600; font-size:1.5rem; margin-bottom:.3rem; }
     .gate-crest { height:66px; width:auto; display:block; margin:0 auto .9rem; }
     header.bar .brand { display:flex; align-items:center; gap:.9rem; }
@@ -31,7 +40,9 @@
     .gate-card p { color:var(--muted); font-size:.92rem; margin:0 0 1.3rem; }
     .gate input { width:100%; padding:.85rem .9rem; font:inherit; border:1.5px solid var(--line); border-radius:10px; margin-bottom:.8rem; }
     .gate input:focus { outline:none; border-color:var(--brand); box-shadow:0 0 0 3px rgba(26,63,160,.15); }
-    .gate button { width:100%; padding:.9rem; border:0; border-radius:999px; background:linear-gradient(135deg,var(--brand-2),var(--brand)); color:#fff; font-family:var(--font-head); font-weight:600; font-size:1rem; cursor:pointer; }
+    .gate button { width:100%; padding:.95rem; border:0; border-radius:999px; background:linear-gradient(135deg,var(--brand-2),var(--brand)); color:#fff; font-family:var(--font-head); font-weight:600; font-size:1rem; cursor:pointer; box-shadow:0 12px 26px -8px rgba(26,63,160,.55); transition:filter .2s, transform .12s; }
+    .gate button:hover { filter:brightness(1.06); }
+    .gate button:active { transform:translateY(1px); }
     .gate .err { color:#a3271a; font-size:.88rem; min-height:1.2em; margin:.4rem 0 0; }
 
     /* ---- Dashboard ---- */
@@ -40,7 +51,7 @@
     header.bar h1 { font-family:var(--font-display); font-weight:600; font-size:clamp(1.5rem,4vw,2rem); }
     header.bar .sub { color:var(--muted); font-size:.9rem; }
     header.bar .actions { margin-left:auto; display:flex; gap:.5rem; }
-    .btn { font-family:var(--font-head); font-weight:600; font-size:.86rem; padding:.55rem 1rem; border-radius:999px; border:1px solid var(--line); background:var(--card); color:var(--ink); cursor:pointer; }
+    .btn { font-family:var(--font-head); font-weight:600; font-size:.86rem; padding:.55rem 1rem; border-radius:999px; border:1px solid var(--line); background:var(--card); color:var(--ink); cursor:pointer; text-decoration:none; display:inline-block; }
     .btn:hover { border-color:var(--brand); color:var(--brand); }
     .btn-primary { background:var(--brand); color:#fff; border-color:var(--brand); }
     .btn-primary:hover { color:#fff; background:var(--brand-2); }
@@ -90,22 +101,29 @@
 <body>
   <!-- ===== Desktop-only notice ===== -->
   <section class="gate hide" id="deskonly">
-    <div class="gate-card">
-      <h1>Verona GAA</h1>
-      <p>The sign-ups dashboard is available on <strong>desktop only</strong>.<br/>Please open this page on a computer.</p>
+    <div class="gate-wrap">
+      <div class="gate-card">
+        <img class="gate-crest" src="/assets/crest.png" alt="Verona GAA crest" onerror="this.style.display='none'" />
+        <h1>Verona GAA</h1>
+        <p>The sign-ups dashboard is available on <strong>desktop only</strong>.<br/>Please open this page on a computer.</p>
+      </div>
+      <a class="gate-back" href="/">&larr; Back to the website</a>
     </div>
   </section>
 
   <!-- ===== Login gate ===== -->
   <section class="gate" id="gate">
-    <form class="gate-card" id="gate-form">
-      <img class="gate-crest" src="/assets/crest.png" alt="Verona GAA crest" onerror="this.style.display='none'" />
-      <h1>Verona GAA</h1>
-      <p>Sign-ups dashboard — log in with your email.</p>
-      <input type="email" id="email" autocomplete="email" autocapitalize="none" spellcheck="false" placeholder="you@example.com" required />
-      <button type="submit">Log in</button>
-      <p class="err" id="gate-err"></p>
-    </form>
+    <div class="gate-wrap">
+      <form class="gate-card" id="gate-form">
+        <img class="gate-crest" src="/assets/crest.png" alt="Verona GAA crest" onerror="this.style.display='none'" />
+        <h1>Verona GAA</h1>
+        <p>Sign-ups dashboard — log in with your email.</p>
+        <input type="email" id="email" autocomplete="email" autocapitalize="none" spellcheck="false" placeholder="you@example.com" required />
+        <button type="submit">Log in</button>
+        <p class="err" id="gate-err"></p>
+      </form>
+      <a class="gate-back" href="/">&larr; Back to the website</a>
+    </div>
   </section>
 
   <!-- ===== Dashboard ===== -->
@@ -119,6 +137,7 @@
         </div>
       </div>
       <div class="actions">
+        <a class="btn" href="/">View site &#8599;</a>
         <button class="btn" id="refresh">Refresh</button>
         <button class="btn" id="csv">Export CSV</button>
         <button class="btn" id="logout">Log out</button>
