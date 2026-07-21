@@ -307,17 +307,37 @@
     window.addEventListener("resize", () => { if (window.innerWidth > 720) set(false); });
   }
 
-  // Branded "curtain wipe" transition when a hero CTA is tapped: a panel
-  // sweeps up, we jump to the target behind it, then it slides off to reveal.
+  // Hero CTA navigation. Hybrid: a short hop gets a duration-capped eased
+  // scroll (you see the journey), a long hop gets the branded curtain wipe
+  // (so the distance doesn't feel frantic). Reduced-motion → instant jump.
   function initTransition() {
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const links = document.querySelectorAll(".hero-cta a[href^='#']");
     if (!links.length) return;
 
+    const header = document.querySelector(".site-header");
     const curtain = document.createElement("div");
     curtain.className = "page-curtain";
     curtain.setAttribute("aria-hidden", "true");
-    document.body.appendChild(curtain);
+    if (!reduce) document.body.appendChild(curtain);
+
+    // Target's scroll position, offset for the sticky header.
+    function targetTop(el) {
+      const h = header ? header.getBoundingClientRect().height : 0;
+      return Math.max(0, el.getBoundingClientRect().top + window.scrollY - h - 8);
+    }
+    const easeInOutCubic = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+    function animateScroll(toY, duration) {
+      const fromY = window.scrollY, delta = toY - fromY;
+      let start = null;
+      function frame(ts) {
+        if (start === null) start = ts;
+        const p = Math.min((ts - start) / duration, 1);
+        window.scrollTo(0, fromY + delta * easeInOutCubic(p));
+        if (p < 1) requestAnimationFrame(frame);
+      }
+      requestAnimationFrame(frame);
+    }
 
     let busy = false;
     links.forEach((a) => {
@@ -325,17 +345,26 @@
         const id = a.getAttribute("href");
         const target = id && id.length > 1 && document.querySelector(id);
         if (!target || busy) return;
+        if (reduce) return; // let the native instant jump happen
         e.preventDefault();
-        busy = true;
-        curtain.classList.add("cover");
-        setTimeout(() => {
-          try { target.scrollIntoView({ behavior: "instant", block: "start" }); }
-          catch (_) { target.scrollIntoView(); }
-          try { history.replaceState(null, "", id); } catch (_) {}
-          curtain.classList.remove("cover");
-          curtain.classList.add("reveal");
-          setTimeout(() => { curtain.classList.remove("reveal"); busy = false; }, 520);
-        }, 350);
+        const toY = targetTop(target);
+        const distance = Math.abs(toY - window.scrollY);
+        try { history.replaceState(null, "", id); } catch (_) {}
+
+        if (distance > window.innerHeight * 1.6) {
+          // Long jump — mask the travel with the curtain wipe.
+          busy = true;
+          curtain.classList.add("cover");
+          setTimeout(() => {
+            window.scrollTo(0, toY);
+            curtain.classList.remove("cover");
+            curtain.classList.add("reveal");
+            setTimeout(() => { curtain.classList.remove("reveal"); busy = false; }, 520);
+          }, 350);
+        } else {
+          // Short hop — capped eased scroll (fixed duration regardless of distance).
+          animateScroll(toY, 650);
+        }
       });
     });
   }
