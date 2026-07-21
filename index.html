@@ -441,10 +441,12 @@
        Leave blank for demo mode (shows the thank-you message, sends nothing).
        ==================================================================== -->
   <script>
+    // To go live: after provisioning the database + env vars (see ADMIN-SETUP.md),
+    // change the endpoint below to "/api/register". Blank = demo mode (shows the
+    // thank-you, stores nothing).
     window.VERONA_FORM_ENDPOINT = "";
-    // "cors" if your flow returns CORS headers; "no-cors" for the simplest
-    // Power Automate setup (fire-and-forget). See FORM-SETUP.md.
-    window.VERONA_FORM_MODE = "no-cors";
+    // Our own /api/register is same-origin and returns JSON, so use "cors".
+    window.VERONA_FORM_MODE = "cors";
   </script>
   <script src="i18n.js"></script>
   <script src="script.js"></script>
