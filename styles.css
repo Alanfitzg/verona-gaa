@@ -693,9 +693,9 @@ a { color: inherit; }
   .hero .eyebrow { justify-content: flex-start; margin-bottom: 1rem; }
   .hero .eyebrow::after { display: none; } /* one leading accent when left-aligned */
 
-  /* Buttons side by side in one row, sharing the width equally */
-  .hero-cta, .hero-cta--mobile { display: flex; flex-direction: row; align-items: stretch; gap: .6rem; width: 100%; }
-  .hero-cta--mobile .btn { flex: 1; padding: .9rem .55rem; font-size: .9rem; }
+  /* Buttons side by side in one row (mobile set only) */
+  .hero-cta--mobile { display: flex; flex-direction: row; flex-wrap: wrap; align-items: stretch; gap: .6rem; }
+  .hero-cta--mobile .btn { padding: .85rem 1.15rem; font-size: .9rem; }
 }
 @media (max-width: 400px) {
   .brand-name { font-size: 1.05rem; }
