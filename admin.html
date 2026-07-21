@@ -92,7 +92,8 @@
     .pill { display:inline-block; font-size:.72rem; font-weight:600; font-family:var(--font-head); padding:.15rem .5rem; border-radius:999px; background:var(--track); color:var(--brand); }
     .pill.u18 { background:#fdf0d6; color:var(--accent); }
     .hide { display:none !important; }
-    .qhead { font-family:var(--font-display); font-weight:600; font-size:1.4rem; color:var(--ink); margin:2.2rem 0 1rem; }
+    .qhead { font-family:var(--font-display); font-weight:600; font-size:1.4rem; color:var(--ink); margin:2.2rem 0 1rem; display:flex; align-items:center; gap:.7rem; }
+    .qhead .btn { margin-left:auto; font-size:.76rem; padding:.42rem .85rem; }
     .qcount { font-family:var(--font-head); font-weight:600; font-size:.8rem; color:var(--muted); background:var(--track); padding:.15rem .55rem; border-radius:999px; vertical-align:middle; margin-left:.4rem; }
     .msgtable td.msg, .msgtable th.msg { white-space:normal; min-width:280px; max-width:520px; }
     footer { color:var(--muted); font-size:.78rem; text-align:center; margin:1.6rem 0 0; }
@@ -139,7 +140,7 @@
       <div class="actions">
         <a class="btn" href="/">View site &#8599;</a>
         <button class="btn" id="refresh">Refresh</button>
-        <button class="btn" id="csv">Export CSV</button>
+        <button class="btn" id="csv">Export sign-ups</button>
         <button class="btn" id="logout">Log out</button>
       </div>
     </header>
@@ -175,7 +176,7 @@
       </table>
     </div>
 
-    <h2 class="qhead">Questions <span class="qcount" id="msg-count">0</span></h2>
+    <h2 class="qhead">Questions <span class="qcount" id="msg-count">0</span> <button class="btn" id="msg-export" type="button">Export CSV</button></h2>
     <div class="tablewrap">
       <table class="msgtable">
         <thead><tr><th>When</th><th>Name</th><th>Email</th><th>Lang</th><th class="msg">Message</th></tr></thead>
@@ -183,7 +184,7 @@
       </table>
     </div>
 
-    <h2 class="qhead">Community list <span class="qcount" id="sub-count">0</span></h2>
+    <h2 class="qhead">Community list <span class="qcount" id="sub-count">0</span> <button class="btn" id="sub-export" type="button">Export CSV</button></h2>
     <div class="tablewrap">
       <table>
         <thead><tr><th>When</th><th>Email</th><th>Language</th></tr></thead>
@@ -200,7 +201,7 @@
     var gate = document.getElementById("gate");
     var dash = document.getElementById("dash");
     var deskonly = document.getElementById("deskonly");
-    var items = [];
+    var items = [], msgs = [], subs = [];
     var authed = false;
 
     function esc(s){ return String(s==null?"":s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];}); }
@@ -260,12 +261,14 @@
 
       overtime(document.getElementById("overtime"), list);
 
-      var sportsMap = {"gaelic-football":0,"hurling":0,"camogie":0,"not-sure":0};
+      var sportsMap = {"gaelic-football":0,"hurling":0,"camogie":0,"handball":0,"rounders":0,"not-sure":0};
       list.forEach(function(it){ (it.sports_interested||[]).forEach(function(s){ if(s in sportsMap) sportsMap[s]++; }); });
       bars(document.getElementById("sports"), [
         {label:"Football", value:sportsMap["gaelic-football"]},
         {label:"Hurling", value:sportsMap["hurling"]},
         {label:"Camogie", value:sportsMap["camogie"]},
+        {label:"Handball", value:sportsMap["handball"]},
+        {label:"Rounders", value:sportsMap["rounders"]},
         {label:"Not sure", value:sportsMap["not-sure"]},
       ]);
 
@@ -301,8 +304,11 @@
       }).join("");
     }
 
-    function toCSV(list){
-      var cols = ["received_at","contact_name","email","contact_number","role","sports_interested","date_of_birth","registering_for_u18","player_name","player_dob","page_language","consent"];
+    var SIGNUP_COLS = ["received_at","contact_name","email","contact_number","role","sports_interested","date_of_birth","registering_for_u18","player_name","player_dob","page_language","consent"];
+    var MSG_COLS = ["received_at","name","email","message","page_language"];
+    var SUB_COLS = ["received_at","email","page_language"];
+
+    function toCSV(list, cols){
       var head = cols.join(",");
       var rows = list.map(function(it){
         return cols.map(function(c){
@@ -314,11 +320,12 @@
       return head+"\n"+rows.join("\n");
     }
 
-    function download(){
-      var blob = new Blob([toCSV(items)], {type:"text/csv;charset=utf-8"});
+    function download(list, cols, filename){
+      if (!list || !list.length) { return; }
+      var blob = new Blob([toCSV(list, cols)], {type:"text/csv;charset=utf-8"});
       var url = URL.createObjectURL(blob);
       var a = document.createElement("a");
-      a.href = url; a.download = "verona-gaa-signups.csv"; a.click();
+      a.href = url; a.download = filename; a.click();
       setTimeout(function(){ URL.revokeObjectURL(url); }, 1000);
     }
 
@@ -339,6 +346,7 @@
       } catch (e) {}
     }
     function renderMessages(list){
+      msgs = list;
       var count = document.getElementById("msg-count");
       if (count) count.textContent = list.length;
       var tb = document.getElementById("msg-tbody");
@@ -363,6 +371,7 @@
       } catch (e) {}
     }
     function renderSubscribers(list){
+      subs = list;
       var count = document.getElementById("sub-count");
       if (count) count.textContent = list.length;
       var tb = document.getElementById("sub-tbody");
@@ -399,7 +408,9 @@
       var u = sessionStorage.getItem(K_USER), p = sessionStorage.getItem(K_KEY);
       if (u && p) attempt(u, p, null);
     });
-    document.getElementById("csv").addEventListener("click", download);
+    document.getElementById("csv").addEventListener("click", function(){ download(items, SIGNUP_COLS, "verona-gaa-signups.csv"); });
+    document.getElementById("msg-export").addEventListener("click", function(){ download(msgs, MSG_COLS, "verona-gaa-questions.csv"); });
+    document.getElementById("sub-export").addEventListener("click", function(){ download(subs, SUB_COLS, "verona-gaa-subscribers.csv"); });
     document.getElementById("logout").addEventListener("click", function(){
       authed = false;
       try { sessionStorage.removeItem(K_USER); sessionStorage.removeItem(K_KEY); } catch(e){}
