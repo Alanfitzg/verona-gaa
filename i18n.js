@@ -143,6 +143,14 @@ window.I18N = {
     "form.success": "Thanks! We've got your details and we'll be in touch soon. 🍀",
     "form.error": "Sorry, something went wrong sending your details. Please try again.",
 
+    "subscribe.title": "Before you go…",
+    "subscribe.body": "Join our community list for updates on training, matches and events at Gaelic Games Verona.",
+    "subscribe.ph": "you@example.com",
+    "subscribe.submit": "Keep me posted",
+    "subscribe.decline": "No thanks",
+    "subscribe.success": "You're on the list! 🍀",
+    "subscribe.error": "Sorry, that didn't work. Please try again.",
+
     "footer.gge": "Member of Gaelic Games Europe",
     "footer.login": "Committee login",
     "footer.location": "Verona, Italy",
@@ -287,6 +295,14 @@ window.I18N = {
     "gge.title": "Gaelic Games Europe",
     "gge.body": "Verona GAA è un club affiliato a Gaelic Games Europe — l'organo di governo del calcio gaelico, dell'hurling e del camogie in tutto il continente.",
     "gge.link": "Visita gaelicgameseurope.com →",
+
+    "subscribe.title": "Prima di andare…",
+    "subscribe.body": "Iscriviti alla nostra lista per ricevere aggiornamenti su allenamenti, partite ed eventi di Gaelic Games Verona.",
+    "subscribe.ph": "tu@esempio.com",
+    "subscribe.submit": "Tienimi aggiornato",
+    "subscribe.decline": "No, grazie",
+    "subscribe.success": "Sei nella lista! 🍀",
+    "subscribe.error": "Spiacenti, non ha funzionato. Riprova.",
 
     "footer.gge": "Membro di Gaelic Games Europe",
     "footer.login": "Area riservata",

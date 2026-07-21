@@ -424,6 +424,95 @@
     });
   }
 
+  // Exit-intent community-list prompt. Shows once per session when the visitor
+  // looks like they're leaving (cursor off the top on desktop, or the back
+  // button), after a little engagement. Never shown again once subscribed.
+  function initSubscribe() {
+    const modal = document.getElementById("exit-modal");
+    if (!modal) return;
+    const SHOWN = "verona-exit-shown", DONE = "verona-subscribed";
+
+    let subscribed = false, shown = false;
+    try { subscribed = localStorage.getItem(DONE) === "1"; } catch (e) {}
+    try { shown = sessionStorage.getItem(SHOWN) === "1"; } catch (e) {}
+    if (subscribed) return;
+
+    // Arm after a short delay or once the visitor has scrolled a bit.
+    let ready = false;
+    setTimeout(() => { ready = true; }, 6000);
+    window.addEventListener("scroll", () => { if (window.scrollY > 500) ready = true; }, { passive: true });
+
+    function open() {
+      if (shown || subscribed || !ready || !modal.hidden) return;
+      shown = true;
+      try { sessionStorage.setItem(SHOWN, "1"); } catch (e) {}
+      modal.hidden = false;
+      document.body.style.overflow = "hidden";
+      const inp = modal.querySelector('input[type="email"]');
+      if (inp) setTimeout(() => inp.focus(), 60);
+    }
+    function close() {
+      modal.hidden = true;
+      document.body.style.overflow = "";
+    }
+
+    // Desktop: cursor leaves the viewport toward the top (address bar / tabs).
+    document.addEventListener("mouseout", (e) => {
+      if (e.clientY <= 0 && !e.relatedTarget) open();
+    });
+    // Back button (esp. mobile): one same-URL history entry so the first back
+    // surfaces the prompt instead of leaving; a second back navigates away.
+    try { history.pushState(null, "", location.href); } catch (e) {}
+    window.addEventListener("popstate", open);
+
+    modal.querySelectorAll("[data-exit-close]").forEach((el) => el.addEventListener("click", close));
+    document.addEventListener("keydown", (e) => { if (e.key === "Escape" && !modal.hidden) close(); });
+
+    const form = modal.querySelector(".exit-form");
+    if (form) {
+      form.addEventListener("submit", async (e) => {
+        if (!form.checkValidity()) return;
+        e.preventDefault();
+        const hp = form.querySelector('[name="bot-field"]');
+        const emailEl = form.querySelector('[name="email"]');
+        const email = emailEl ? emailEl.value.trim() : "";
+        if (hp && hp.value.trim() !== "") { succeed(); return; }
+        const btn = form.querySelector('button[type="submit"]');
+        if (btn) btn.disabled = true;
+        try {
+          const res = await fetch("/api/subscribe", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email: email, page_language: document.documentElement.lang || "en" }),
+          });
+          if (!res.ok) throw new Error("HTTP " + res.status);
+          succeed();
+        } catch (err) {
+          if (btn) btn.disabled = false;
+          const lang = document.documentElement.lang || "en";
+          const msg = (dict[lang] && dict[lang]["subscribe.error"]) || "Please try again.";
+          let box = form.querySelector(".form-error");
+          if (!box) { box = document.createElement("p"); box.className = "form-error"; form.insertBefore(box, form.querySelector("input[type='email']")); }
+          box.textContent = msg;
+        }
+      });
+    }
+
+    function succeed() {
+      try { localStorage.setItem(DONE, "1"); } catch (e) {}
+      const lang = document.documentElement.lang || "en";
+      const msg = (dict[lang] && dict[lang]["subscribe.success"]) || "Thanks!";
+      const note = document.createElement("div");
+      note.className = "exit-success";
+      note.textContent = msg;
+      const f = modal.querySelector(".exit-form");
+      if (f) f.replaceWith(note);
+      const d = modal.querySelector(".exit-decline");
+      if (d) d.remove();
+      setTimeout(close, 1900);
+    }
+  }
+
   document.addEventListener("DOMContentLoaded", () => {
     initLang();
     initForm();
@@ -432,5 +521,6 @@
     initNav();
     initTransition();
     initContact();
+    initSubscribe();
   });
 })();

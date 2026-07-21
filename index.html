@@ -475,6 +475,23 @@
     <a class="footer-login" href="/admin" data-i18n="footer.login">Committee login</a>
   </footer>
 
+  <!-- ===== Exit-intent: community list ===== -->
+  <div class="exit-modal" id="exit-modal" hidden>
+    <div class="exit-backdrop" data-exit-close></div>
+    <div class="exit-card" role="dialog" aria-modal="true" aria-labelledby="exit-title">
+      <button class="exit-close" type="button" data-exit-close aria-label="Close">&times;</button>
+      <img class="exit-crest" src="assets/crest.png" alt="" onerror="this.style.display='none'" />
+      <h2 id="exit-title" data-i18n="subscribe.title">Before you go…</h2>
+      <p data-i18n="subscribe.body">Join our community list for updates on training, matches and events at Gaelic Games Verona.</p>
+      <form class="exit-form" novalidate>
+        <p class="hp-field" aria-hidden="true"><label>Don't fill this out: <input name="bot-field" tabindex="-1" autocomplete="off" /></label></p>
+        <input type="email" name="email" autocomplete="email" required data-i18n-attr="placeholder" data-i18n="subscribe.ph" placeholder="you@example.com" />
+        <button type="submit" class="btn btn-primary" data-i18n="subscribe.submit">Keep me posted</button>
+      </form>
+      <button class="exit-decline" type="button" data-exit-close data-i18n="subscribe.decline">No thanks</button>
+    </div>
+  </div>
+
   <!-- ====================================================================
        Where signups are sent. Paste your Power Automate "When an HTTP
        request is received" URL between the quotes to go live.

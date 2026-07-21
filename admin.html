@@ -183,7 +183,15 @@
       </table>
     </div>
 
-    <footer>Personal data — keep this page private. Sign-ups and messages are stored on your Vercel database.</footer>
+    <h2 class="qhead">Community list <span class="qcount" id="sub-count">0</span></h2>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>When</th><th>Email</th><th>Language</th></tr></thead>
+        <tbody id="sub-tbody"></tbody>
+      </table>
+    </div>
+
+    <footer>Personal data — keep this page private. Sign-ups, questions and subscribers are stored on your Vercel database.</footer>
   </main>
 
   <script>
@@ -345,12 +353,34 @@
       }).join("");
     }
 
+    async function loadSubscribers(user, pw){
+      try {
+        var res = await fetch("/api/subscribers", { headers: { "x-admin-user": user, "x-admin-key": pw } });
+        if (!res.ok) return;
+        var json = await res.json();
+        renderSubscribers(json.items || []);
+      } catch (e) {}
+    }
+    function renderSubscribers(list){
+      var count = document.getElementById("sub-count");
+      if (count) count.textContent = list.length;
+      var tb = document.getElementById("sub-tbody");
+      if (!list.length) { tb.innerHTML = '<tr><td colspan="3" class="empty">No subscribers yet.</td></tr>'; return; }
+      tb.innerHTML = list.map(function(it){
+        return '<tr>'+
+          '<td>'+esc(fmtDate(it.received_at))+'</td>'+
+          '<td><a href="mailto:'+esc(it.email)+'">'+esc(it.email)+'</a></td>'+
+          '<td><span class="pill">'+esc((it.page_language||"").toUpperCase())+'</span></td>'+
+        '</tr>';
+      }).join("");
+    }
+
     async function attempt(user, pw, errEl){
       try {
         var list = await load(user, pw);
         authed = true;
         try { sessionStorage.setItem(K_USER, user); sessionStorage.setItem(K_KEY, pw); } catch(e){}
-        ui(); render(list); loadMessages(user, pw);
+        ui(); render(list); loadMessages(user, pw); loadSubscribers(user, pw);
       } catch (e) {
         authed = false;
         if (errEl) errEl.textContent = e.message || "Something went wrong.";
