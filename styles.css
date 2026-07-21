@@ -688,7 +688,7 @@ a { color: inherit; }
   .hero {
     flex-direction: column; justify-content: flex-start; align-items: stretch;
     text-align: left;
-    padding-top: 5.5rem; padding-bottom: 3rem;
+    padding-top: 1.75rem; padding-bottom: 3rem;
     background-image:
       linear-gradient(to bottom,
         rgba(6,16,46,.92) 0%,
