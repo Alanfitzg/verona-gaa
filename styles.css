@@ -386,7 +386,7 @@ a { color: inherit; }
 #join .section-inner { position: relative; z-index: 1; }
 #join::after {
   content: ""; position: absolute; z-index: 0; pointer-events: none;
-  top: 50%; right: -4%; transform: translateY(-50%);
+  top: 50%; left: calc(50% + 290px); right: auto; transform: translateY(-50%);
   width: clamp(340px, 36vw, 560px); aspect-ratio: 1;
   background: url("assets/crest.png") center / contain no-repeat;
   opacity: .3;
