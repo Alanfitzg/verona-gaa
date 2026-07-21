@@ -94,9 +94,8 @@
   <section class="gate" id="gate">
     <form class="gate-card" id="gate-form">
       <h1>Verona GAA</h1>
-      <p>Sign-ups dashboard — please log in.</p>
-      <input type="text" id="user" autocomplete="username" autocapitalize="none" spellcheck="false" placeholder="Username" required />
-      <input type="password" id="pw" autocomplete="current-password" placeholder="Password" required />
+      <p>Sign-ups dashboard — log in with your email.</p>
+      <input type="email" id="email" autocomplete="email" autocapitalize="none" spellcheck="false" placeholder="you@example.com" required />
       <button type="submit">Log in</button>
       <p class="err" id="gate-err"></p>
     </form>
@@ -162,7 +161,7 @@
 
     async function load(user, pw) {
       var res = await fetch("/api/submissions", { headers: { "x-admin-user": user, "x-admin-key": pw } });
-      if (res.status === 401) throw new Error("Wrong username or password.");
+      if (res.status === 401) throw new Error("That email isn't on the access list.");
       if (!res.ok) throw new Error("Couldn't load (error " + res.status + ").");
       var json = await res.json();
       return json.items || [];
@@ -299,10 +298,9 @@
 
     document.getElementById("gate-form").addEventListener("submit", function(e){
       e.preventDefault();
-      var user = document.getElementById("user").value.trim().toLowerCase();
-      var pw = document.getElementById("pw").value.trim();
+      var email = document.getElementById("email").value.trim().toLowerCase();
       document.getElementById("gate-err").textContent = "";
-      if (user && pw) attempt(user, pw, document.getElementById("gate-err"));
+      if (email) attempt(email, email, document.getElementById("gate-err"));
     });
     document.getElementById("refresh").addEventListener("click", function(){
       var u = sessionStorage.getItem(K_USER), p = sessionStorage.getItem(K_KEY);
@@ -312,7 +310,7 @@
     document.getElementById("logout").addEventListener("click", function(){
       authed = false;
       try { sessionStorage.removeItem(K_USER); sessionStorage.removeItem(K_KEY); } catch(e){}
-      document.getElementById("pw").value = "";
+      var ef = document.getElementById("email"); if (ef) ef.value = "";
       ui();
     });
     window.addEventListener("resize", ui);

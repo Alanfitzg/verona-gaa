@@ -4,17 +4,26 @@ const REDIS_URL = process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_
 const REDIS_TOKEN = process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN;
 const LIST_KEY = "verona:signups";
 
-// Named logins live in ADMIN_USERS as JSON, e.g. {"alan":"pw1","chris":"pw2"}.
-// A single shared ADMIN_PASSWORD still works too, if set.
+// Access control. Simplest mode: ADMIN_EMAILS is a comma-separated allow-list of
+// emails — logging in just means entering an email that's on the list (low
+// security, chosen deliberately; tighten later). Named ADMIN_USERS (user+pass)
+// and a single ADMIN_PASSWORD still work too, if set.
 function authOK(req) {
   const user = String(req.headers["x-admin-user"] || "").toLowerCase().trim();
   const key = String(req.headers["x-admin-key"] || (req.query && req.query.key) || "");
   if (!key) return false;
+  const keyLc = key.toLowerCase().trim();
+
+  const emails = String(process.env.ADMIN_EMAILS || "")
+    .split(/[,;\s]+/).map((e) => e.toLowerCase().trim()).filter(Boolean);
+  if (emails.length && emails.indexOf(keyLc) !== -1) return true;
+
   let users = {};
   try { users = JSON.parse(process.env.ADMIN_USERS || "{}"); } catch (e) { users = {}; }
   const map = {};
   Object.keys(users).forEach((k) => { map[k.toLowerCase()] = users[k]; });
   if (user && map[user] && map[user] === key) return true;
+
   if (process.env.ADMIN_PASSWORD && key === process.env.ADMIN_PASSWORD) return true;
   return false;
 }
