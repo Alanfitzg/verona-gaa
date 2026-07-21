@@ -264,6 +264,16 @@ a { color: inherit; }
   background: linear-gradient(140deg, rgba(26,63,160,.10), rgba(246,180,14,.14));
 }
 
+/* About (desktop): slicker editorial columns — no boxes, gold accents */
+.about-desktop .cards { grid-template-columns: repeat(3, 1fr); gap: 0; margin-top: 3rem; }
+.about-desktop .card { background: none; border: 0; box-shadow: none; border-radius: 0; padding: .3rem clamp(1.4rem, 3vw, 2.4rem); overflow: visible; }
+.about-desktop .card:hover { transform: none; box-shadow: none; }
+.about-desktop .card::before { display: none; }
+.about-desktop .card + .card { border-left: 1px solid var(--line); }
+.about-desktop .card h3 { font-size: 1.28rem; margin: 0 0 .55rem; }
+.about-desktop .card p { color: var(--body); }
+.about-desktop .card-accent { display: block; width: 38px; height: 3px; border-radius: 3px; background: linear-gradient(90deg, var(--accent), var(--accent-dark)); margin-bottom: 1.15rem; }
+
 /* About: mobile-only editorial variant (hidden on desktop) */
 .about-mobile { display: none; }
 .about-points { list-style: none; margin: 1.7rem 0 0; padding: 0; }
