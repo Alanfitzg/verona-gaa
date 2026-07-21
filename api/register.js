@@ -1,13 +1,23 @@
-// Store a join-form sign-up in Supabase (reuses your existing Supabase stack).
-// Same-origin POST, so no CORS needed. Optionally emails a notification via
-// Resend — all env-gated and non-blocking.
-const SB_URL = process.env.SUPABASE_URL;
-const SB_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SERVICE_KEY;
-const TABLE = process.env.SIGNUPS_TABLE || "verona_signups";
+// Store a join-form sign-up in Redis (Upstash, provisioned via Vercel Storage —
+// dedicated to this site, always-on, free). Same-origin POST, no CORS needed.
+// Optionally emails a notification via Resend — env-gated and non-blocking.
+const REDIS_URL = process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL;
+const REDIS_TOKEN = process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN;
+const LIST_KEY = "verona:signups";
 
 const RESEND_KEY = process.env.RESEND_API_KEY;
 const RESEND_FROM = process.env.SIGNUP_FROM_EMAIL; // a Resend-verified sender
 const NOTIFY_TO = process.env.SIGNUP_NOTIFY_TO;
+
+async function redis(command) {
+  const r = await fetch(REDIS_URL, {
+    method: "POST",
+    headers: { Authorization: "Bearer " + REDIS_TOKEN, "Content-Type": "application/json" },
+    body: JSON.stringify(command),
+  });
+  if (!r.ok) throw new Error("redis " + r.status);
+  return r.json();
+}
 
 async function notify(rec) {
   if (!RESEND_KEY || !RESEND_FROM || !NOTIFY_TO) return;
@@ -37,13 +47,12 @@ async function notify(rec) {
 
 export default async function handler(req, res) {
   if (req.method !== "POST") { res.status(405).json({ ok: false }); return; }
-  if (!SB_URL || !SB_KEY) { res.status(503).json({ ok: false, error: "storage not configured" }); return; }
+  if (!REDIS_URL || !REDIS_TOKEN) { res.status(503).json({ ok: false, error: "storage not configured" }); return; }
 
   let data = req.body;
   if (typeof data === "string") { try { data = JSON.parse(data); } catch (e) { data = {}; } }
   data = data || {};
 
-  // Honeypot (if a direct poster fills the hidden field): accept + drop silently.
   if (data["bot-field"] && String(data["bot-field"]).trim() !== "") { res.status(200).json({ ok: true }); return; }
 
   const email = String(data.email || "").trim();
@@ -53,6 +62,8 @@ export default async function handler(req, res) {
   }
 
   const record = {
+    id: Date.now().toString(36) + Math.random().toString(36).slice(2, 8),
+    received_at: new Date().toISOString(),
     role: String(data.role || ""),
     registering_for_u18: String(data.registering_for_u18 || "no"),
     player_name: String(data.player_name || "").slice(0, 200),
@@ -67,17 +78,8 @@ export default async function handler(req, res) {
   };
 
   try {
-    const r = await fetch(SB_URL + "/rest/v1/" + TABLE, {
-      method: "POST",
-      headers: {
-        apikey: SB_KEY,
-        Authorization: "Bearer " + SB_KEY,
-        "Content-Type": "application/json",
-        Prefer: "return=minimal",
-      },
-      body: JSON.stringify(record),
-    });
-    if (!r.ok) throw new Error("supabase " + r.status);
+    await redis(["LPUSH", LIST_KEY, JSON.stringify(record)]);
+    await redis(["LTRIM", LIST_KEY, "0", "4999"]); // keep the store bounded
     notify(record); // fire-and-forget email
     res.status(200).json({ ok: true });
   } catch (e) {

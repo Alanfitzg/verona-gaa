@@ -1,12 +1,10 @@
-// Returns all stored sign-ups from Supabase, gated by the ADMIN_PASSWORD env
-// var. The /admin dashboard calls this with an "x-admin-key" header. Uses the
-// service_role key server-side (bypasses RLS) so public keys can never read PII.
-const SB_URL = process.env.SUPABASE_URL;
-const SB_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SERVICE_KEY;
-const TABLE = process.env.SIGNUPS_TABLE || "verona_signups";
+// Returns all stored sign-ups from Redis, gated by named logins in ADMIN_USERS.
+// The /admin dashboard calls this with x-admin-user + x-admin-key headers.
+const REDIS_URL = process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL;
+const REDIS_TOKEN = process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN;
+const LIST_KEY = "verona:signups";
 
-// Named logins live in the ADMIN_USERS env var as JSON, e.g.
-//   {"alan":"password1","chris":"password2"}
+// Named logins live in ADMIN_USERS as JSON, e.g. {"alan":"pw1","chris":"pw2"}.
 // A single shared ADMIN_PASSWORD still works too, if set.
 function authOK(req) {
   const user = String(req.headers["x-admin-user"] || "").toLowerCase().trim();
@@ -21,16 +19,25 @@ function authOK(req) {
   return false;
 }
 
+async function redis(command) {
+  const r = await fetch(REDIS_URL, {
+    method: "POST",
+    headers: { Authorization: "Bearer " + REDIS_TOKEN, "Content-Type": "application/json" },
+    body: JSON.stringify(command),
+  });
+  if (!r.ok) throw new Error("redis " + r.status);
+  return r.json();
+}
+
 export default async function handler(req, res) {
   if (!authOK(req)) { res.status(401).json({ ok: false, error: "unauthorized" }); return; }
-  if (!SB_URL || !SB_KEY) { res.status(503).json({ ok: false, error: "storage not configured" }); return; }
+  if (!REDIS_URL || !REDIS_TOKEN) { res.status(503).json({ ok: false, error: "storage not configured" }); return; }
 
   try {
-    const r = await fetch(SB_URL + "/rest/v1/" + TABLE + "?select=*&order=received_at.desc&limit=5000", {
-      headers: { apikey: SB_KEY, Authorization: "Bearer " + SB_KEY },
-    });
-    if (!r.ok) throw new Error("supabase " + r.status);
-    const items = await r.json();
+    const out = await redis(["LRANGE", LIST_KEY, "0", "-1"]);
+    const items = (out.result || [])
+      .map((s) => { try { return JSON.parse(s); } catch (e) { return null; } })
+      .filter(Boolean);
     res.setHeader("Cache-Control", "no-store");
     res.status(200).json({ ok: true, count: items.length, items: items });
   } catch (e) {
