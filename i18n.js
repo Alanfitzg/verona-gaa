@@ -156,6 +156,8 @@ window.I18N = {
     "footer.login": "Committee login",
     "footer.location": "Verona, Italy",
     "footer.tagline": "Gaelic games · community · craic",
+    "footer.creditPre": "Hero photograph of Verona by the photographer Livioandronico2013, used under a ",
+    "footer.creditPost": " licence.",
     "footer.credit": "Verona panorama © Livioandronico2013, CC BY-SA 4.0."
   },
 
@@ -309,6 +311,8 @@ window.I18N = {
     "footer.gge": "Membro di Gaelic Games Europe",
     "footer.login": "Area riservata",
     "footer.location": "Verona, Italia",
-    "footer.tagline": "Sport gaelici · comunità · divertimento"
+    "footer.tagline": "Sport gaelici · comunità · divertimento",
+    "footer.creditPre": "Fotografia di Verona del fotografo Livioandronico2013, usata con licenza ",
+    "footer.creditPost": "."
   }
 };
