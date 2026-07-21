@@ -361,11 +361,31 @@ a { color: inherit; }
 .sport p { margin: 0; color: var(--body); }
 
 /* ===== Form ===== */
-#join { background: var(--bg-alt); }
+/* Subtle warm/brand tint so About isn't flat white */
+#about {
+  background:
+    radial-gradient(620px 440px at 92% 10%, rgba(26,63,160,.055), transparent 62%),
+    radial-gradient(520px 440px at 4% 94%, rgba(246,180,14,.06), transparent 62%),
+    var(--bg);
+}
+/* Join: a vibrant navy band so the community message + form card pop */
+#join {
+  position: relative; color: #fff;
+  background:
+    radial-gradient(760px 440px at 12% 0%, rgba(47,87,201,.42), transparent 60%),
+    radial-gradient(680px 540px at 100% 100%, rgba(246,180,14,.13), transparent 60%),
+    linear-gradient(160deg, #0d1f57 0%, #081439 100%);
+}
+#join::before {
+  content: ""; position: absolute; top: 0; left: 0; right: 0; height: 4px;
+  background: linear-gradient(90deg, var(--brand-2), var(--accent), var(--brand-2));
+}
+#join h2 { color: #fff; }
+#join .lead { color: rgba(255,255,255,.9); }
 .join-form {
-  margin-top: 2.4rem; background: var(--card); border: 1px solid var(--line);
+  margin-top: 2.4rem; background: var(--card); border: 0;
   border-radius: var(--radius-lg); padding: clamp(1.6rem, 4vw, 2.6rem);
-  box-shadow: var(--shadow);
+  box-shadow: var(--shadow-lg);
 }
 .field { margin-bottom: 1.2rem; }
 .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1.1rem; }
