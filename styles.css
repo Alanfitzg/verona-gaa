@@ -222,6 +222,7 @@ a { color: inherit; }
   max-width: 640px; margin: 1.2rem auto 2.1rem; line-height: 1.6;
 }
 .hero-cta { display: flex; gap: .9rem; justify-content: center; flex-wrap: wrap; }
+.hero-cta--mobile { display: none; }
 
 .hero-scroll {
   position: absolute; z-index: 1; left: 50%; bottom: clamp(1.2rem, 4vh, 2.2rem);
@@ -615,6 +616,25 @@ a { color: inherit; }
   .festival .eyebrow, .festival-unesco { justify-content: center; }
   .festival-unesco { margin-left: auto; margin-right: auto; }
   .hero { min-height: 92svh; }
+
+  /* ---- Mobile-only header + hero treatment ---- */
+  /* Inverted (dark) header with white text + larger crest */
+  .site-header { background: rgba(8,20,57,.85); border-bottom-color: rgba(255,255,255,.14); }
+  .site-header.is-stuck { background: rgba(8,20,57,.94); box-shadow: 0 6px 20px rgba(0,0,0,.3); }
+  .brand-name { color: #fff; }
+  .brand-crest { height: 56px; }
+  .site-header.is-stuck .brand-crest { height: 46px; }
+  .nav-toggle { background: rgba(255,255,255,.12); border-color: rgba(255,255,255,.28); }
+  .nav-toggle span { background: #fff; }
+  .lang-switch { background: rgba(255,255,255,.10); border-color: rgba(255,255,255,.30); }
+  .lang-btn { color: rgba(255,255,255,.8); }
+  .lang-btn:hover { color: #fff; }
+
+  /* Trim hero: smaller headline, no subtext, mobile CTAs */
+  .hero h1 { font-size: clamp(1.8rem, 7vw, 2.3rem); }
+  .hero-sub { display: none; }
+  .hero-cta--desktop { display: none; }
+  .hero-cta--mobile { display: flex; }
 }
 @media (max-width: 400px) {
   .brand-name { font-size: 1.05rem; }

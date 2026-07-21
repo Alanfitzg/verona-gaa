@@ -10,6 +10,8 @@ window.I18N = {
     "hero.sub": "Gaelic football, hurling and camogie come to Tocatì. Discover how they're played, what to watch for, and how to try them yourself.",
     "hero.ctaJoin": "Discover the games",
     "hero.ctaLearn": "About the festival",
+    "hero.ctaJoinClub": "Join the club",
+    "hero.ctaDiscover": "Discover the games",
 
     "festival.kicker": "Brought to you by",
     "festival.title": "The Tocatì Festival",
@@ -132,6 +134,8 @@ window.I18N = {
     "hero.sub": "Calcio gaelico, hurling e camogie arrivano a Tocatì. Scopri come si giocano, cosa osservare e come provarli di persona.",
     "hero.ctaJoin": "Scopri gli sport",
     "hero.ctaLearn": "Il festival",
+    "hero.ctaJoinClub": "Unisciti al club",
+    "hero.ctaDiscover": "Scopri gli sport",
 
     "festival.kicker": "A cura del",
     "festival.title": "Festival Tocatì",
