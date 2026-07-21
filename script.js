@@ -307,11 +307,45 @@
     window.addEventListener("resize", () => { if (window.innerWidth > 720) set(false); });
   }
 
+  // Branded "curtain wipe" transition when a hero CTA is tapped: a panel
+  // sweeps up, we jump to the target behind it, then it slides off to reveal.
+  function initTransition() {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const links = document.querySelectorAll(".hero-cta a[href^='#']");
+    if (!links.length) return;
+
+    const curtain = document.createElement("div");
+    curtain.className = "page-curtain";
+    curtain.setAttribute("aria-hidden", "true");
+    document.body.appendChild(curtain);
+
+    let busy = false;
+    links.forEach((a) => {
+      a.addEventListener("click", (e) => {
+        const id = a.getAttribute("href");
+        const target = id && id.length > 1 && document.querySelector(id);
+        if (!target || busy) return;
+        e.preventDefault();
+        busy = true;
+        curtain.classList.add("cover");
+        setTimeout(() => {
+          try { target.scrollIntoView({ behavior: "instant", block: "start" }); }
+          catch (_) { target.scrollIntoView(); }
+          try { history.replaceState(null, "", id); } catch (_) {}
+          curtain.classList.remove("cover");
+          curtain.classList.add("reveal");
+          setTimeout(() => { curtain.classList.remove("reveal"); busy = false; }, 520);
+        }, 350);
+      });
+    });
+  }
+
   document.addEventListener("DOMContentLoaded", () => {
     initLang();
     initForm();
     initMotion();
     initGames();
     initNav();
+    initTransition();
   });
 })();
