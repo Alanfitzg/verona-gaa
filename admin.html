@@ -95,6 +95,7 @@
     .qhead { font-family:var(--font-display); font-weight:600; font-size:1.4rem; color:var(--ink); margin:2.2rem 0 1rem; display:flex; align-items:center; gap:.7rem; }
     .qhead .btn { margin-left:auto; font-size:.76rem; padding:.42rem .85rem; }
     .qcount { font-family:var(--font-head); font-weight:600; font-size:.8rem; color:var(--muted); background:var(--track); padding:.15rem .55rem; border-radius:999px; vertical-align:middle; margin-left:.4rem; }
+    .qsub { font-family:var(--font-body); font-weight:400; font-size:.86rem; color:var(--muted); }
     .msgtable td.msg, .msgtable th.msg { white-space:normal; min-width:280px; max-width:520px; }
     footer { color:var(--muted); font-size:.78rem; text-align:center; margin:1.6rem 0 0; }
   </style>
@@ -184,7 +185,7 @@
       </table>
     </div>
 
-    <h2 class="qhead">Community list <span class="qcount" id="sub-count">0</span> <button class="btn" id="sub-export" type="button">Export CSV</button></h2>
+    <h2 class="qhead">Mailing list <span class="qcount" id="sub-count">0</span> <span class="qsub">emails left in the pop-up shown when visitors leave the site</span> <button class="btn" id="sub-export" type="button">Export CSV</button></h2>
     <div class="tablewrap">
       <table>
         <thead><tr><th>When</th><th>Email</th><th>Language</th></tr></thead>
@@ -410,7 +411,7 @@
     });
     document.getElementById("csv").addEventListener("click", function(){ download(items, SIGNUP_COLS, "verona-gaa-signups.csv"); });
     document.getElementById("msg-export").addEventListener("click", function(){ download(msgs, MSG_COLS, "verona-gaa-questions.csv"); });
-    document.getElementById("sub-export").addEventListener("click", function(){ download(subs, SUB_COLS, "verona-gaa-subscribers.csv"); });
+    document.getElementById("sub-export").addEventListener("click", function(){ download(subs, SUB_COLS, "verona-gaa-mailing-list.csv"); });
     document.getElementById("logout").addEventListener("click", function(){
       authed = false;
       try { sessionStorage.removeItem(K_USER); sessionStorage.removeItem(K_KEY); } catch(e){}

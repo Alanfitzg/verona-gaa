@@ -79,8 +79,11 @@
     }
 
     form.addEventListener("submit", async (e) => {
-      // Native validation first (shows the browser's field errors).
-      if (!form.checkValidity()) return;
+      // The form is `novalidate`, so the browser won't stop an incomplete
+      // submit on its own — we must cancel it and show the field errors here,
+      // otherwise the browser does a native POST and the visitor lands on a
+      // blank 405 page with everything they typed lost.
+      if (!form.checkValidity()) { e.preventDefault(); form.reportValidity(); return; }
       e.preventDefault();
 
       // Silently drop spam bots that fill the hidden honeypot.
@@ -128,8 +131,13 @@
 
   // Gather the form into a tidy JSON object for the backend / SharePoint list.
   function collectData(form) {
+    // For radios, take the checked one; for everything else, the field itself.
+    // (A single selector list here would always return the first radio in
+    // document order, so every sign-up used to be recorded as "player".)
     const val = (n) => {
-      const el = form.querySelector('[name="' + n + '"]:checked, [name="' + n + '"]');
+      const el =
+        form.querySelector('[name="' + n + '"]:checked') ||
+        form.querySelector('[name="' + n + '"]');
       return el ? el.value.trim() : "";
     };
     const interests = Array.from(
@@ -403,7 +411,7 @@
     }
 
     form.addEventListener("submit", async (e) => {
-      if (!form.checkValidity()) return;
+      if (!form.checkValidity()) { e.preventDefault(); form.reportValidity(); return; }
       e.preventDefault();
       const hp = form.querySelector('[name="bot-field"]');
       if (hp && hp.value.trim() !== "") { done("contact.success", false); return; }
@@ -478,7 +486,7 @@
     const form = modal.querySelector(".exit-form");
     if (form) {
       form.addEventListener("submit", async (e) => {
-        if (!form.checkValidity()) return;
+        if (!form.checkValidity()) { e.preventDefault(); form.reportValidity(); return; }
         e.preventDefault();
         const hp = form.querySelector('[name="bot-field"]');
         const emailEl = form.querySelector('[name="email"]');
