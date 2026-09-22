@@ -260,19 +260,27 @@
 
     function countBy(list, fn){ var m={}; list.forEach(function(it){ var k=fn(it); if(k==null) return; m[k]=(m[k]||0)+1; }); return m; }
 
-    function render(list){
-      items = list;
-      document.getElementById("updated").textContent = list.length + " total · updated " + new Date().toLocaleTimeString();
-
-      var weekAgo = Date.now() - 7*24*3600*1000;
-      var thisWeek = list.filter(function(it){ return new Date(it.received_at).getTime() >= weekAgo; }).length;
+    // Stat tiles. "Total sign-ups" = registration form + mailing list (the
+    // pop-up), with the split underneath. Re-run whenever either list loads.
+    function renderTiles(){
+      var list = items, weekAgo = Date.now() - 7*24*3600*1000;
+      var inWeek = function(it){ return new Date(it.received_at).getTime() >= weekAgo; };
+      var total = list.length + subs.length;
+      var thisWeek = list.filter(inWeek).length + subs.filter(inWeek).length;
       var players = list.filter(function(it){ return it.role==="player"; }).length;
       var u18 = list.filter(function(it){ return it.registering_for_u18==="yes"; }).length;
+      document.getElementById("updated").textContent =
+        list.length + " registered · " + subs.length + " on the mailing list · updated " + new Date().toLocaleTimeString();
       document.getElementById("tiles").innerHTML =
-        tile("Total sign-ups", list.length, "", true) +
-        tile("This week", thisWeek, "last 7 days") +
-        tile("Players", players, "of "+list.length+" total") +
+        tile("Total sign-ups", total, list.length + " registered · " + subs.length + " mailing list", true) +
+        tile("This week", thisWeek, "last 7 days, both lists") +
+        tile("Players", players, "of " + list.length + " registered") +
         tile("Under-18", u18, "parent-registered");
+    }
+
+    function render(list){
+      items = list;
+      renderTiles();
 
       overtime(document.getElementById("overtime"), list);
 
@@ -323,14 +331,19 @@
     var MSG_COLS = ["received_at","name","email","message","message_en","page_language"];
     var SUB_COLS = ["received_at","email","page_language"];
 
+    // CSV with a leading "#" column. Rows are ordered oldest → newest and
+    // numbered 1..N, so a person's number stays the same as new entries arrive.
     function toCSV(list, cols){
-      var head = cols.join(",");
-      var rows = list.map(function(it){
-        return cols.map(function(c){
+      var head = ["#"].concat(cols).join(",");
+      var ordered = list.slice().sort(function(a,b){
+        return (new Date(a.received_at).getTime()||0) - (new Date(b.received_at).getTime()||0);
+      });
+      var rows = ordered.map(function(it, i){
+        return [String(i+1)].concat(cols.map(function(c){
           var v = it[c]; if (Array.isArray(v)) v = v.join("; ");
           v = String(v==null?"":v).replace(/"/g,'""');
           return '"'+v+'"';
-        }).join(",");
+        })).join(",");
       });
       return head+"\n"+rows.join("\n");
     }
@@ -429,6 +442,7 @@
     }
     function renderSubscribers(list){
       subs = list;
+      renderTiles();
       var count = document.getElementById("sub-count");
       if (count) count.textContent = list.length;
       var tb = document.getElementById("sub-tbody");
