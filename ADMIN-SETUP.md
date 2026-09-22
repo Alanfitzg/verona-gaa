@@ -14,8 +14,12 @@ Supabase project does — so nothing quietly shuts down between sign-ups.
 - `api/register.js` — validates a join-form POST, stores it in Redis, optional
   Resend email. Store capped at 5,000 records.
 - `api/submissions.js` — returns the records, gated by named logins.
+- `api/contact.js`, `api/messages.js` — the "Get in touch" form and its reader.
+- `api/subscribe.js`, `api/subscribers.js` — the leaving pop-up mailing list.
+- `api/translate.js` — translates questions to English for the dashboard (optional,
+  needs `ANTHROPIC_API_KEY`).
 - `admin.html` — the dashboard (served at `/admin`), `noindex`, desktop-only,
-  username + password.
+  email allow-list login.
 
 ## 1. Create the database (in Vercel — 1 minute)
 1. Vercel → your **verona-gaa** project → **Storage** tab → **Create Database**.
@@ -27,9 +31,25 @@ Supabase project does — so nothing quietly shuts down between sign-ups.
 ## 2. Set the logins (Vercel → Settings → Environment Variables)
 | Name | Value |
 |---|---|
-| `ADMIN_USERS` | JSON of named logins, e.g. `{"alan":"pw1","chris":"pw2"}` |
+| `ADMIN_EMAILS` | Comma-separated list of emails allowed in, e.g. `chris@example.com,pro.europe@gaa.ie` |
 
-`/admin` takes a **username + password** per person and is **desktop-only**.
+`/admin` is **desktop-only** and logs you in by **email alone** — anyone on the
+list types their address and is in (a deliberate low-security choice; there's no
+password). The variable is stored as a Secret, so its value can't be viewed
+afterwards: when you edit it, retype the **whole** list, not just the new name.
+The older `ADMIN_USERS` (JSON of `{"user":"password"}`) and `ADMIN_PASSWORD`
+modes still work if set.
+
+**Optional — "Translate to English" button on the Questions table.** Messages
+usually arrive in Italian; the button translates them with Claude and shows the
+English under each original (translated once, then cached in the database).
+| Name | Value |
+|---|---|
+| `ANTHROPIC_API_KEY` | an API key from https://console.anthropic.com → API Keys |
+
+Without the key the button still works, but offers a Google Translate link per
+message instead. Cost is negligible: a batch of a dozen messages is a fraction
+of a cent.
 
 **Optional — email each sign-up via Resend** (add all three to switch it on):
 | Name | Value |

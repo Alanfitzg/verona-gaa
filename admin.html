@@ -93,7 +93,15 @@
     .pill.u18 { background:#fdf0d6; color:var(--accent); }
     .hide { display:none !important; }
     .qhead { font-family:var(--font-display); font-weight:600; font-size:1.4rem; color:var(--ink); margin:2.2rem 0 1rem; display:flex; align-items:center; gap:.7rem; }
-    .qhead .btn { margin-left:auto; font-size:.76rem; padding:.42rem .85rem; }
+    .qhead .qactions { margin-left:auto; display:flex; gap:.5rem; flex-wrap:wrap; }
+    .qhead .btn { font-size:.76rem; padding:.42rem .85rem; }
+    .qhead .btn[disabled] { opacity:.6; cursor:default; }
+    .qnote { font-size:.84rem; color:var(--muted); margin:-.4rem 0 .9rem; }
+    .qnote a { color:var(--brand); }
+    /* English translation shown under a message */
+    .xl { margin-top:.5rem; padding:.5rem .65rem; background:#eef2fb; border-left:3px solid var(--brand-2); border-radius:6px; color:var(--ink); }
+    .xl b { font-family:var(--font-head); font-size:.64rem; letter-spacing:.08em; color:var(--brand); margin-right:.45rem; vertical-align:middle; }
+    .xl-link { display:inline-block; margin-top:.4rem; font-size:.78rem; }
     .qcount { font-family:var(--font-head); font-weight:600; font-size:.8rem; color:var(--muted); background:var(--track); padding:.15rem .55rem; border-radius:999px; vertical-align:middle; margin-left:.4rem; }
     .qsub { font-family:var(--font-body); font-weight:400; font-size:.86rem; color:var(--muted); }
     .msgtable td.msg, .msgtable th.msg { white-space:normal; min-width:280px; max-width:520px; }
@@ -177,7 +185,13 @@
       </table>
     </div>
 
-    <h2 class="qhead">Questions <span class="qcount" id="msg-count">0</span> <button class="btn" id="msg-export" type="button">Export CSV</button></h2>
+    <h2 class="qhead">Questions <span class="qcount" id="msg-count">0</span>
+      <span class="qactions">
+        <button class="btn btn-primary" id="msg-translate" type="button">Translate to English</button>
+        <button class="btn" id="msg-export" type="button">Export CSV</button>
+      </span>
+    </h2>
+    <p class="qnote" id="msg-note" hidden></p>
     <div class="tablewrap">
       <table class="msgtable">
         <thead><tr><th>When</th><th>Name</th><th>Email</th><th>Lang</th><th class="msg">Message</th></tr></thead>
@@ -185,7 +199,7 @@
       </table>
     </div>
 
-    <h2 class="qhead">Mailing list <span class="qcount" id="sub-count">0</span> <span class="qsub">emails left in the pop-up shown when visitors leave the site</span> <button class="btn" id="sub-export" type="button">Export CSV</button></h2>
+    <h2 class="qhead">Mailing list <span class="qcount" id="sub-count">0</span> <span class="qsub">emails left in the pop-up shown when visitors leave the site</span> <span class="qactions"><button class="btn" id="sub-export" type="button">Export CSV</button></span></h2>
     <div class="tablewrap">
       <table>
         <thead><tr><th>When</th><th>Email</th><th>Language</th></tr></thead>
@@ -306,7 +320,7 @@
     }
 
     var SIGNUP_COLS = ["received_at","contact_name","email","contact_number","role","sports_interested","date_of_birth","registering_for_u18","player_name","player_dob","page_language","consent"];
-    var MSG_COLS = ["received_at","name","email","message","page_language"];
+    var MSG_COLS = ["received_at","name","email","message","message_en","page_language"];
     var SUB_COLS = ["received_at","email","page_language"];
 
     function toCSV(list, cols){
@@ -346,6 +360,12 @@
         renderMessages(json.items || []);
       } catch (e) {}
     }
+    // --- Translation of questions (English shown under the original) ---
+    var translations = {};   // message key -> English text, filled by /api/translate
+    var showEn = false;      // toggle state of the Translate button
+    var gtFallback = false;  // API not configured: offer Google Translate links instead
+    function msgKey(it){ return it.id || (it.received_at + "|" + it.email); }
+
     function renderMessages(list){
       msgs = list;
       var count = document.getElementById("msg-count");
@@ -353,14 +373,50 @@
       var tb = document.getElementById("msg-tbody");
       if (!list.length) { tb.innerHTML = '<tr><td colspan="5" class="empty">No questions yet.</td></tr>'; return; }
       tb.innerHTML = list.map(function(it){
+        var en = translations[msgKey(it)];
+        var extra = "";
+        if (showEn && en) extra = '<div class="xl"><b>EN</b>'+esc(en)+'</div>';
+        else if (gtFallback) extra = '<a class="xl-link" target="_blank" rel="noopener" href="https://translate.google.com/?sl=auto&tl=en&op=translate&text='+encodeURIComponent(it.message||"")+'">Open in Google Translate &#8599;</a>';
         return '<tr>'+
           '<td>'+esc(fmtDate(it.received_at))+'</td>'+
           '<td>'+esc(it.name)+'</td>'+
           '<td><a href="mailto:'+esc(it.email)+'">'+esc(it.email)+'</a></td>'+
           '<td><span class="pill">'+esc((it.page_language||"").toUpperCase())+'</span></td>'+
-          '<td class="msg">'+esc(it.message)+'</td>'+
+          '<td class="msg">'+esc(it.message)+extra+'</td>'+
         '</tr>';
       }).join("");
+    }
+
+    function setNote(html){ var n = document.getElementById("msg-note"); n.innerHTML = html || ""; n.hidden = !html; }
+    function setTranslateBtn(){ var b = document.getElementById("msg-translate"); b.disabled = false; b.textContent = showEn ? "Hide translations" : "Translate to English"; }
+
+    async function translateMessages(){
+      var btn = document.getElementById("msg-translate");
+      if (showEn) { showEn = false; setTranslateBtn(); renderMessages(msgs); return; }
+      var todo = msgs.filter(function(it){ return (it.message||"").trim() && !translations[msgKey(it)]; });
+      if (!todo.length) { showEn = true; setTranslateBtn(); renderMessages(msgs); return; }
+
+      btn.disabled = true; btn.textContent = "Translating…"; setNote("");
+      var u = sessionStorage.getItem(K_USER), p = sessionStorage.getItem(K_KEY);
+      try {
+        var res = await fetch("/api/translate", {
+          method: "POST",
+          headers: { "Content-Type": "application/json", "x-admin-user": u || "", "x-admin-key": p || "" },
+          body: JSON.stringify({ items: todo.map(function(it){ return { id: msgKey(it), text: it.message }; }) }),
+        });
+        var json = {}; try { json = await res.json(); } catch(e){}
+        if (res.status === 503 && /not configured/.test(json.error||"")) {
+          gtFallback = true;
+          setNote('Automatic translation isn\'t set up yet: add an <code>ANTHROPIC_API_KEY</code> environment variable in Vercel and redeploy (see ADMIN-SETUP.md). Until then, each message has a Google Translate link.');
+          setTranslateBtn(); renderMessages(msgs); return;
+        }
+        if (!res.ok || !json.ok) throw new Error(json.error || ("error " + res.status));
+        Object.keys(json.translations || {}).forEach(function(k){ translations[k] = json.translations[k]; });
+        showEn = true; setTranslateBtn(); renderMessages(msgs);
+      } catch (e) {
+        setNote("Translation failed (" + esc(e.message || "unknown error") + "). Please try again.");
+        setTranslateBtn();
+      }
     }
 
     async function loadSubscribers(user, pw){
@@ -410,7 +466,11 @@
       if (u && p) attempt(u, p, null);
     });
     document.getElementById("csv").addEventListener("click", function(){ download(items, SIGNUP_COLS, "verona-gaa-signups.csv"); });
-    document.getElementById("msg-export").addEventListener("click", function(){ download(msgs, MSG_COLS, "verona-gaa-questions.csv"); });
+    document.getElementById("msg-export").addEventListener("click", function(){
+      var withEn = msgs.map(function(it){ return Object.assign({}, it, { message_en: translations[msgKey(it)] || "" }); });
+      download(withEn, MSG_COLS, "verona-gaa-questions.csv");
+    });
+    document.getElementById("msg-translate").addEventListener("click", translateMessages);
     document.getElementById("sub-export").addEventListener("click", function(){ download(subs, SUB_COLS, "verona-gaa-mailing-list.csv"); });
     document.getElementById("logout").addEventListener("click", function(){
       authed = false;
