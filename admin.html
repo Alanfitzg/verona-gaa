@@ -160,6 +160,8 @@
         <a class="btn" href="/">View site &#8599;</a>
         <button class="btn" id="refresh">Refresh</button>
         <button class="btn" id="csv">Export sign-ups</button>
+        <button class="btn btn-primary" id="all-export" title="Every unique email from sign-ups, questions and the mailing list, as a CSV">Export all emails</button>
+        <button class="btn" id="all-copy" title="Copy every unique email, comma-separated, to paste into the BCC of an invitation">Copy emails for BCC</button>
         <button class="btn" id="logout">Log out</button>
       </div>
     </header>
@@ -349,6 +351,28 @@
     var SIGNUP_COLS = ["received_at","contact_name","email","contact_number","role","sports_interested","date_of_birth","registering_for_u18","player_name","player_dob","page_language","consent"];
     var MSG_COLS = ["received_at","name","email","message","message_en","page_language","replied_by","replied_at"];
     var SUB_COLS = ["received_at","email","page_language"];
+    var ALL_COLS = ["email","name","page_language","sources","received_at"];
+
+    // One row per unique email (case-insensitive) across sign-ups, questions and
+    // the mailing list, for sending invitations. Keeps the first name found and
+    // the earliest date, and lists every place the person appears in "sources".
+    function allContacts(){
+      var byEmail = {};
+      function add(email, name, lang, when, source){
+        var key = String(email||"").trim().toLowerCase();
+        if (!key) return;
+        var c = byEmail[key];
+        if (!c) c = byEmail[key] = { email: key, name: "", page_language: "", sources: [], received_at: when };
+        if (!c.name && name) c.name = name;
+        if (!c.page_language && lang) c.page_language = String(lang).toUpperCase();
+        if (c.sources.indexOf(source) === -1) c.sources.push(source);
+        if (when && (!c.received_at || new Date(when) < new Date(c.received_at))) c.received_at = when;
+      }
+      items.forEach(function(it){ add(it.email, it.contact_name, it.page_language, it.received_at, "sign-up"); });
+      msgs.forEach(function(it){ add(it.email, it.name, it.page_language, it.received_at, "question"); });
+      subs.forEach(function(it){ add(it.email, "", it.page_language, it.received_at, "mailing list"); });
+      return Object.keys(byEmail).map(function(k){ return byEmail[k]; });
+    }
 
     // CSV with a leading "#" column. Rows are ordered oldest → newest and
     // numbered 1..N, so a person's number stays the same as new entries arrive.
@@ -567,6 +591,14 @@
       if (u && p) attempt(u, p, null);
     });
     document.getElementById("csv").addEventListener("click", function(){ download(items, SIGNUP_COLS, "verona-gaa-signups.csv"); });
+    document.getElementById("all-export").addEventListener("click", function(){ download(allContacts(), ALL_COLS, "verona-gaa-all-emails.csv"); });
+    document.getElementById("all-copy").addEventListener("click", function(){
+      var b = this, list = allContacts().map(function(c){ return c.email; });
+      if (!list.length || !navigator.clipboard) return;
+      navigator.clipboard.writeText(list.join(", ")).then(function(){
+        b.textContent = "Copied " + list.length + " emails"; setTimeout(function(){ b.textContent = "Copy emails for BCC"; }, 2000);
+      });
+    });
     document.getElementById("msg-export").addEventListener("click", function(){
       var withEn = msgs.map(function(it){
         return Object.assign({}, it, {
