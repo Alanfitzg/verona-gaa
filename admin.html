@@ -114,6 +114,7 @@
     .rby { font-size:.74rem; color:var(--muted); margin-top:.2rem; }
     .rundo { border:0; background:none; padding:0; margin-left:.35rem; font:inherit; font-size:.74rem; color:var(--brand); text-decoration:underline; cursor:pointer; }
     .qsub.wait { color:var(--accent); font-weight:600; }
+    .acctable { min-width:0; }
     footer { color:var(--muted); font-size:.78rem; text-align:center; margin:1.6rem 0 0; }
   </style>
 </head>
@@ -213,6 +214,15 @@
       <table>
         <thead><tr><th>When</th><th>Email</th><th>Language</th></tr></thead>
         <tbody id="sub-tbody"></tbody>
+      </table>
+    </div>
+
+    <h2 class="qhead">Who has access <span class="qcount" id="acc-count">0</span> <span class="qsub">emails that can log in to this dashboard (the <code>ADMIN_EMAILS</code> setting in Vercel)</span> <span class="qactions"><button class="btn" id="acc-copy" type="button">Copy list</button></span></h2>
+    <p class="qnote" id="acc-note" hidden></p>
+    <div class="tablewrap">
+      <table class="acctable">
+        <thead><tr><th>#</th><th>Email</th></tr></thead>
+        <tbody id="acc-tbody"></tbody>
       </table>
     </div>
 
@@ -510,12 +520,35 @@
       }).join("");
     }
 
+    // --- Who has access (ADMIN_EMAILS is a Vercel Secret, so this is the only place to read it) ---
+    var accessList = "";
+    async function loadAccess(user, pw){
+      try {
+        var res = await fetch("/api/access", { headers: { "x-admin-user": user, "x-admin-key": pw } });
+        if (!res.ok) return;
+        renderAccess(await res.json());
+      } catch (e) {}
+    }
+    function renderAccess(json){
+      var emails = json.emails || [];
+      accessList = emails.join(",");
+      document.getElementById("acc-count").textContent = emails.length;
+      var tb = document.getElementById("acc-tbody");
+      tb.innerHTML = emails.length
+        ? emails.map(function(e, i){ return '<tr><td>'+(i+1)+'</td><td>'+esc(e)+'</td></tr>'; }).join("")
+        : '<tr><td colspan="2" class="empty">ADMIN_EMAILS is empty.</td></tr>';
+      var extra = [];
+      if ((json.users||[]).length) extra.push("Also set: named logins in ADMIN_USERS (" + json.users.map(esc).join(", ") + ").");
+      if (json.shared_password) extra.push("Also set: a shared ADMIN_PASSWORD.");
+      var n = document.getElementById("acc-note"); n.innerHTML = extra.join(" "); n.hidden = !extra.length;
+    }
+
     async function attempt(user, pw, errEl){
       try {
         var list = await load(user, pw);
         authed = true;
         try { sessionStorage.setItem(K_USER, user); sessionStorage.setItem(K_KEY, pw); } catch(e){}
-        ui(); render(list); loadMessages(user, pw); loadSubscribers(user, pw);
+        ui(); render(list); loadMessages(user, pw); loadSubscribers(user, pw); loadAccess(user, pw);
       } catch (e) {
         authed = false;
         if (errEl) errEl.textContent = e.message || "Something went wrong.";
@@ -552,6 +585,14 @@
       else setReplied(t.getAttribute("data-undo"), false, t);
     });
     document.getElementById("sub-export").addEventListener("click", function(){ download(subs, SUB_COLS, "verona-gaa-mailing-list.csv"); });
+    // Copies the list in the exact comma-separated form to paste into ADMIN_EMAILS.
+    document.getElementById("acc-copy").addEventListener("click", function(){
+      var b = this;
+      if (!accessList || !navigator.clipboard) return;
+      navigator.clipboard.writeText(accessList).then(function(){
+        b.textContent = "Copied"; setTimeout(function(){ b.textContent = "Copy list"; }, 1500);
+      });
+    });
     document.getElementById("logout").addEventListener("click", function(){
       authed = false;
       try { sessionStorage.removeItem(K_USER); sessionStorage.removeItem(K_KEY); } catch(e){}
