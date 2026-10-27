@@ -105,6 +105,15 @@
     .qcount { font-family:var(--font-head); font-weight:600; font-size:.8rem; color:var(--muted); background:var(--track); padding:.15rem .55rem; border-radius:999px; vertical-align:middle; margin-left:.4rem; }
     .qsub { font-family:var(--font-body); font-weight:400; font-size:.86rem; color:var(--muted); }
     .msgtable td.msg, .msgtable th.msg { white-space:normal; min-width:280px; max-width:520px; }
+    /* Replied marker: shared across admins so nobody answers a question twice */
+    .msgtable tr.done td:not(.status) { opacity:.55; }
+    .rbtn { font-family:var(--font-head); font-weight:600; font-size:.74rem; padding:.3rem .7rem; border-radius:999px; border:1px solid var(--line); background:var(--card); color:var(--ink); cursor:pointer; }
+    .rbtn:hover { border-color:var(--good); color:var(--good); }
+    .rbtn[disabled] { opacity:.6; cursor:default; }
+    .pill.ok { background:#e3f3e8; color:var(--good); }
+    .rby { font-size:.74rem; color:var(--muted); margin-top:.2rem; }
+    .rundo { border:0; background:none; padding:0; margin-left:.35rem; font:inherit; font-size:.74rem; color:var(--brand); text-decoration:underline; cursor:pointer; }
+    .qsub.wait { color:var(--accent); font-weight:600; }
     footer { color:var(--muted); font-size:.78rem; text-align:center; margin:1.6rem 0 0; }
   </style>
 </head>
@@ -185,7 +194,7 @@
       </table>
     </div>
 
-    <h2 class="qhead">Questions <span class="qcount" id="msg-count">0</span>
+    <h2 class="qhead">Questions <span class="qcount" id="msg-count">0</span> <span class="qsub" id="msg-awaiting"></span>
       <span class="qactions">
         <button class="btn btn-primary" id="msg-translate" type="button">Translate to English</button>
         <button class="btn" id="msg-export" type="button">Export CSV</button>
@@ -194,7 +203,7 @@
     <p class="qnote" id="msg-note" hidden></p>
     <div class="tablewrap">
       <table class="msgtable">
-        <thead><tr><th>When</th><th>Name</th><th>Email</th><th>Lang</th><th class="msg">Message</th></tr></thead>
+        <thead><tr><th>Replied</th><th>When</th><th>Name</th><th>Email</th><th>Lang</th><th class="msg">Message</th></tr></thead>
         <tbody id="msg-tbody"></tbody>
       </table>
     </div>
@@ -328,7 +337,7 @@
     }
 
     var SIGNUP_COLS = ["received_at","contact_name","email","contact_number","role","sports_interested","date_of_birth","registering_for_u18","player_name","player_dob","page_language","consent"];
-    var MSG_COLS = ["received_at","name","email","message","message_en","page_language"];
+    var MSG_COLS = ["received_at","name","email","message","message_en","page_language","replied_by","replied_at"];
     var SUB_COLS = ["received_at","email","page_language"];
 
     // CSV with a leading "#" column. Rows are ordered oldest → newest and
@@ -383,14 +392,19 @@
       msgs = list;
       var count = document.getElementById("msg-count");
       if (count) count.textContent = list.length;
+      var waiting = list.filter(function(it){ return !it.replied; }).length;
+      var aw = document.getElementById("msg-awaiting");
+      aw.textContent = list.length ? (waiting ? waiting + " awaiting reply" : "all replied") : "";
+      aw.className = "qsub" + (waiting ? " wait" : "");
       var tb = document.getElementById("msg-tbody");
-      if (!list.length) { tb.innerHTML = '<tr><td colspan="5" class="empty">No questions yet.</td></tr>'; return; }
+      if (!list.length) { tb.innerHTML = '<tr><td colspan="6" class="empty">No questions yet.</td></tr>'; return; }
       tb.innerHTML = list.map(function(it){
         var en = translations[msgKey(it)];
         var extra = "";
         if (showEn && en) extra = '<div class="xl"><b>EN</b>'+esc(en)+'</div>';
         else if (gtFallback) extra = '<a class="xl-link" target="_blank" rel="noopener" href="https://translate.google.com/?sl=auto&tl=en&op=translate&text='+encodeURIComponent(it.message||"")+'">Open in Google Translate &#8599;</a>';
-        return '<tr>'+
+        return '<tr'+(it.replied?' class="done"':'')+'>'+
+          '<td class="status">'+statusCell(it)+'</td>'+
           '<td>'+esc(fmtDate(it.received_at))+'</td>'+
           '<td>'+esc(it.name)+'</td>'+
           '<td><a href="mailto:'+esc(it.email)+'">'+esc(it.email)+'</a></td>'+
@@ -398,6 +412,46 @@
           '<td class="msg">'+esc(it.message)+extra+'</td>'+
         '</tr>';
       }).join("");
+    }
+
+    // --- "Replied" marker (shared via /api/replied, so everyone sees who answered) ---
+    function shortName(email){ return String(email||"").split("@")[0]; }
+    function statusCell(it){
+      if (!it.id) return "";
+      if (it.replied) {
+        return '<span class="pill ok">&#10003; Replied</span>'+
+          '<div class="rby" title="'+esc(it.replied.by)+'">'+esc(shortName(it.replied.by))+' · '+esc(fmtDate(it.replied.at))+
+          '<button class="rundo" type="button" data-undo="'+esc(it.id)+'">Undo</button></div>';
+      }
+      return '<button class="rbtn" type="button" data-reply="'+esc(it.id)+'">Mark replied</button>';
+    }
+
+    async function setReplied(id, replied, btn){
+      var u = sessionStorage.getItem(K_USER), p = sessionStorage.getItem(K_KEY);
+      var it = msgs.filter(function(m){ return m.id === id; })[0];
+      if (!it) return;
+      if (btn) btn.disabled = true;
+      setNote("");
+      try {
+        var res = await fetch("/api/replied", {
+          method: "POST",
+          headers: { "Content-Type": "application/json", "x-admin-user": u || "", "x-admin-key": p || "" },
+          body: JSON.stringify({ id: id, replied: replied }),
+        });
+        var json = {}; try { json = await res.json(); } catch(e){}
+        if (res.status === 409 && json.replied) {
+          it.replied = json.replied;
+          setNote("Already marked as replied by " + esc(json.replied.by) + " (" + esc(fmtDate(json.replied.at)) + "). No need to answer again.");
+        } else if (!res.ok || !json.ok) {
+          throw new Error(json.error || ("error " + res.status));
+        } else {
+          it.replied = json.replied || undefined;
+        }
+        renderMessages(msgs);
+      } catch (e) {
+        setNote("Couldn't save (" + esc(e.message || "unknown error") + "). Please try again.");
+        if (btn) btn.disabled = false;
+      }
     }
 
     function setNote(html){ var n = document.getElementById("msg-note"); n.innerHTML = html || ""; n.hidden = !html; }
@@ -481,10 +535,22 @@
     });
     document.getElementById("csv").addEventListener("click", function(){ download(items, SIGNUP_COLS, "verona-gaa-signups.csv"); });
     document.getElementById("msg-export").addEventListener("click", function(){
-      var withEn = msgs.map(function(it){ return Object.assign({}, it, { message_en: translations[msgKey(it)] || "" }); });
+      var withEn = msgs.map(function(it){
+        return Object.assign({}, it, {
+          message_en: translations[msgKey(it)] || "",
+          replied_by: it.replied ? it.replied.by : "",
+          replied_at: it.replied ? it.replied.at : "",
+        });
+      });
       download(withEn, MSG_COLS, "verona-gaa-questions.csv");
     });
     document.getElementById("msg-translate").addEventListener("click", translateMessages);
+    document.getElementById("msg-tbody").addEventListener("click", function(e){
+      var t = e.target.closest("[data-reply],[data-undo]");
+      if (!t) return;
+      if (t.hasAttribute("data-reply")) setReplied(t.getAttribute("data-reply"), true, t);
+      else setReplied(t.getAttribute("data-undo"), false, t);
+    });
     document.getElementById("sub-export").addEventListener("click", function(){ download(subs, SUB_COLS, "verona-gaa-mailing-list.csv"); });
     document.getElementById("logout").addEventListener("click", function(){
       authed = false;

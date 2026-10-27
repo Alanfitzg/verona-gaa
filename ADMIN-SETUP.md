@@ -15,6 +15,8 @@ Supabase project does — so nothing quietly shuts down between sign-ups.
   Resend email. Store capped at 5,000 records.
 - `api/submissions.js` — returns the records, gated by named logins.
 - `api/contact.js`, `api/messages.js` — the "Get in touch" form and its reader.
+- `api/replied.js` — the "Mark replied" button on the Questions table, so the
+  committee can see who has already answered a question (no setup needed).
 - `api/subscribe.js`, `api/subscribers.js` — the leaving pop-up mailing list.
 - `api/translate.js` — translates questions to English for the dashboard (optional,
   needs `ANTHROPIC_API_KEY`).

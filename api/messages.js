@@ -3,6 +3,7 @@
 const REDIS_URL = process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL;
 const REDIS_TOKEN = process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN;
 const LIST_KEY = "verona:messages";
+const REPLIED_KEY = "verona:replied";
 
 function authOK(req) {
   const user = String(req.headers["x-admin-user"] || "").toLowerCase().trim();
@@ -43,6 +44,14 @@ export default async function handler(req, res) {
     const items = (out.result || [])
       .map((s) => { try { return JSON.parse(s); } catch (e) { return null; } })
       .filter(Boolean);
+
+    // "Replied" marks (api/replied.js): HGETALL comes back as a flat [field, value, ...] list.
+    const marks = {};
+    const flat = (await redis(["HGETALL", REPLIED_KEY])).result || [];
+    for (let i = 0; i + 1 < flat.length; i += 2) {
+      try { marks[flat[i]] = JSON.parse(flat[i + 1]); } catch (e) { /* skip bad entry */ }
+    }
+    items.forEach((it) => { if (it.id && marks[it.id]) it.replied = marks[it.id]; });
     res.setHeader("Cache-Control", "no-store");
     res.status(200).json({ ok: true, count: items.length, items: items });
   } catch (e) {
