@@ -393,7 +393,8 @@
 
     function download(list, cols, filename){
       if (!list || !list.length) { return; }
-      var blob = new Blob([toCSV(list, cols)], {type:"text/csv;charset=utf-8"});
+      // Leading BOM so Excel/Word read it as UTF-8 (accented names) without asking.
+      var blob = new Blob(["﻿" + toCSV(list, cols)], {type:"text/csv;charset=utf-8"});
       var url = URL.createObjectURL(blob);
       var a = document.createElement("a");
       a.href = url; a.download = filename; a.click();
